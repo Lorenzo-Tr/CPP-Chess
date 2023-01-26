@@ -1,4 +1,4 @@
-NAME=Pair
+NAME=Chess
 
 CC=g++
 FLAGS=-Wall
@@ -21,15 +21,14 @@ ifeq ($(OPTI), 1)
 endif
 
 SRC_PATH=src/
-SRC_NAME=main.cpp
+SRC_NAME=main.cpp\
+  Board.cpp
 
 SRC=$(addprefix $(SRC_PATH), $(SRC_NAME))
 
 INC_PATH=include/
 INC_NAME=Pair.hpp\
-	Map-pair.hpp\
-	Set-list.hpp\
-	MyArraySized.hpp
+  Board.hpp\
 
 INC=$(addprefix $(INC_PATH), $(INC_NAME))
 
