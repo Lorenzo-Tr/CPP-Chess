@@ -22,13 +22,15 @@ endif
 
 SRC_PATH=src/
 SRC_NAME=main.cpp\
-  Board.cpp
+  Board.cpp\
+  ChessPiece.cpp
 
 SRC=$(addprefix $(SRC_PATH), $(SRC_NAME))
 
 INC_PATH=include/
 INC_NAME=Pair.hpp\
   Board.hpp\
+  ChessPiece.hpp
 
 INC=$(addprefix $(INC_PATH), $(INC_NAME))
 
