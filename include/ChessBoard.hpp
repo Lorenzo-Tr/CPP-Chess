@@ -2,7 +2,7 @@
 
 class ChessBoard {
  private:
-  
+  int* board_;
 
  public:
   ChessBoard();
