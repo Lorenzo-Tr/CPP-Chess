@@ -71,6 +71,8 @@ bool Rook::validate_move(int x, int y) {
 
   if (getY() == y && x < 7 && x >= 0)
     return true;
+
+  return false;
 }
 void Rook::move(int x, int y) {
   if (validate_move(x, y)) {
@@ -89,7 +91,7 @@ bool Knight::validate_move(int x, int y) {
   int diffX = abs(getX() - x);
   int diffY = abs(getY() - y);
 
-  if (diffX == 2 && diffY == 1 || diffX == 1 && diffY == 2)
+  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2))
     return true;
 
   return false;
@@ -134,7 +136,7 @@ bool Pawn::validate_move(int x, int y) {
   int diffX = abs(getX() - x);
   int diffY = abs(getY() - y);
 
-  bool can_move;
+  // bool can_move;
 
   if (already_move_)
     if (diffY == 2 || diffY == 1)
@@ -149,7 +151,7 @@ bool Pawn::validate_move(int x, int y) {
   return false;
 }
 void Pawn::move(int x, int y) {
-  already_move_ == false;
+  already_move_ = true;
   if (validate_move(x, y)) {
   }
 }

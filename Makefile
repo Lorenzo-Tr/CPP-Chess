@@ -27,7 +27,7 @@ SRC_NAME=main.cpp\
   Player.cpp\
   Game.cpp
 
-SRC=$(addprefix $(SRC_PATH), $(SRC_NAME))
+SRC=$(addprefix $(SRC_PATH),$(SRC_NAME))
 
 INC_PATH=include/
 INC_NAME=ChessBoard.hpp\
@@ -35,17 +35,17 @@ INC_NAME=ChessBoard.hpp\
   Player.hpp\
   Game.hpp
 
-INC=$(addprefix $(INC_PATH), $(INC_NAME))
+INC=$(addprefix $(INC_PATH),$(INC_NAME))
 
 OBJ_PATH=obj/
-OBJ_NAME=$(addprefix $(OBJ_PATH), $(SRC_NAME))
+OBJ_NAME=$(addprefix $(OBJ_PATH),$(SRC_NAME))
 OBJS=$(OBJ_NAME:.cpp=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
-	
+
 $(OBJ_PATH)%.o: $(SRC_PATH)%.cpp
 	@printf "Compiling $@"
 	@printf "                     \\n\r"

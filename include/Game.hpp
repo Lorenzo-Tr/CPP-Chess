@@ -11,7 +11,7 @@ class Game {
   list<string> historical_shots_;
 
  public:
-  Game(ChessBoard board, bool play, list<string> historical);
+  Game(ChessBoard board, bool player, list<string> historical);
   bool change_player();
   int cancel_shot();
   bool check_echec(int x, int y);

@@ -4,20 +4,22 @@
 
 class Piece {
  private:
-  bool color_;
   int x_;
   int y_;
+  bool color_;
   ChessBoard* board_;
 
  public:
-
   Piece(int x, int y, bool color, ChessBoard* board);
   inline bool getColor() { return color_; }
   inline ChessBoard* getBoard() { return board_; }
-  inline void setBoard(ChessBoard* board) { board_ = board; }
   inline int getX() { return x_; }
   inline int getY() { return y_; }
 
+  inline void setColor(bool color) { color_ = color; };
+  inline void setX(int x) { x_ = x; };
+  inline void setY(int y) { y_ = y; };
+  inline void setBoard(ChessBoard* board) { board_ = board; }
 
   // Check if is a valid move
   virtual bool validate_move(int x, int y) = 0;

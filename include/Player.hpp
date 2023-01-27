@@ -3,8 +3,8 @@
 using namespace std;
 class Player {
  private:
-  bool color_;
   string name_;
+  bool color_;
 
  public:
   Player(string name, bool color);
