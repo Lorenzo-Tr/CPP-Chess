@@ -94,7 +94,18 @@ void Knight::move(int x, int y) {
 /* -------------------------------------------- */
 Bishop::Bishop(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
-bool Bishop::validate_move(int x, int y) {}
+bool Bishop::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  int diffX = abs(getX() - x);
+  int diffY = abs(getY() - y);
+
+  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY)
+    return true;
+
+  return false;
+}
 void Bishop::move(int x, int y) {
   if (validate_move(x, y)) {
   }
