@@ -1,4 +1,7 @@
 #include "Piece.hpp"
+#include <string>
+
+using namespace std;
 
 /* -------------------------------------------- */
 /*                     Piece                    */
@@ -9,7 +12,18 @@ Piece::Piece(int x, int y, bool color) : x_(x), y_(y), color_(color) {}
 /*                     King                     */
 /* -------------------------------------------- */
 King::King(int x, int y, bool color) : Piece(x, y, color) {}
-bool King::validate_move(int x, int y) {}
+bool King::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  int diffX = getX() - x;
+  int diffY = getY() - y;
+
+  if (diffX == 1 || diffX == -1 || diffY == 1 || diffY == -1)
+    return true;
+
+  return false;
+}
 void King::move(int x, int y) {
   if (validate_move(x, y)) {
   }
