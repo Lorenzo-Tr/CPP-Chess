@@ -12,7 +12,7 @@ class Piece {
  public:
   Piece(int x, int y, bool color, ChessBoard* board);
   inline bool getColor() { return color_; }
-  inline ChessBoard* getBoard() { return board_; }
+  inline int* getBoard() { return board_->getBoard(); }
   inline int getX() { return x_; }
   inline int getY() { return y_; }
 

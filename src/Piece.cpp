@@ -47,7 +47,7 @@ bool Queen::validate_move(int x, int y) {
   // check line
   if (getY() == y && x < 7 && x >= 0) {
     for (int i = getX(); i <= x; i++) {
-      if (getBoard()[i * 8 + j] != 0)
+      if (getBoard()[i * 8 + y] != 0)
         return false;
     }
   }
@@ -56,7 +56,7 @@ bool Queen::validate_move(int x, int y) {
   // check column
   if (getX() == x && y < 7 && y >= 0) {
     for (int j = getY(); j <= y; j++) {
-      if (getBoard()[i * 8 + j] != 0)
+      if (getBoard()[x * 8 + j] != 0)
         return false;
     }
   }
@@ -173,7 +173,11 @@ bool Pawn::validate_move(int x, int y) {
   int diffX = abs(getX() - x);
   int diffY = abs(getY() - y);
 
-  // bool can_move;
+  for (int i = getY(); i <= y; i++) {
+    if (getBoard()[getX() * 8 + i] != 0) {
+      return false;
+    }
+  }
 
   if (already_move_)
     if (diffY == 2 || diffY == 1)
@@ -182,14 +186,14 @@ bool Pawn::validate_move(int x, int y) {
   if (diffY == 1)
     return true;
 
-  if (diffY == 1 && diffX == 1)
+  if (diffY == 1 && diffX == 1 && getBoard()[x * 8 + y] != 0)
     return true;
 
   return false;
 }
 void Pawn::move(int x, int y) {
-  already_move_ = true;
   if (validate_move(x, y)) {
+    already_move_ = true;
   }
 }
 

@@ -7,6 +7,8 @@ class ChessBoard {
  public:
   ChessBoard();
 
+  inline int* getBoard() { return board_; }
+
   void print();
   // Check if the move is valide
   bool check_move(int x1, int y1, int x2, int y2);
