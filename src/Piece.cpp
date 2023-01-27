@@ -1,6 +1,6 @@
 #include "Piece.hpp"
-
 #include <math.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -44,16 +44,54 @@ bool Queen::validate_move(int x, int y) {
   if (x > 8 || x < 0 || y > 7 || y < 7)
     return false;
 
-  if (getY() == y && x < 7 && x >= 0)
-    return true;
+  // check line
+  if (getY() == y && x < 7 && x >= 0) {
+    for (int i = getX(); i <= x; i++) {
+      if (getBoard()[i * 8 + j] != 0)
+        return false;
+    }
+  }
+  return true;
+}
+// check column
+if (getX() == x && y < 7 && y >= 0) {
+  for (int j = getY(); j <= y; j++) {
+    if (getBoard()[i * 8 + j] != 0)
+      return false;
+  }
+}
+return true;
+}
 
-  int diffX = abs(getX() - x);
-  int diffY = abs(getY() - y);
-
-  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY)
-    return true;
-
-  return false;
+int diffX = abs(getX() - x);
+int diffY = abs(getY() - y);
+int dirX = getX() - x;
+int dirY = getY() - y;
+// check diagonale
+if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY) {
+  if ((dirX < 0 && dirY < 0) || (dirX > 0 && dirY > 0)) {
+    int max_X = max(getX(), x);
+    int max_Y = max(getY(), y);
+    for (int i = min(getX(), x); i < max_X; i++) {
+      for (int j = min(getY(), y); j < max_Y; j++) {
+        if (getBoard()[i * 8 + j] != 0)
+          return false;
+      }
+    }
+  }
+  if ((dirX < 0 && dirY > 0) || (dirX > 0 && dirY < 0)) {
+    int max_X = max(getX(), x);
+    int min_Y = min(getY(), y);
+    for (int i = min(getX(), x); i < max_X; i++) {
+      for (int j = max(getY(), y); j > min_Y; j--) {
+        if (getBoard()[i * 8 + j] != 0)
+          return false;
+      }
+    }
+  }
+  return true;
+}
+return false;
 }
 void Queen::move(int x, int y) {
   if (validate_move(x, y)) {
