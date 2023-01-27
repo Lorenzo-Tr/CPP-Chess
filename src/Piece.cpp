@@ -62,7 +62,13 @@ void Queen::move(int x, int y) {
 /* -------------------------------------------- */
 Rook::Rook(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
-bool Rook::validate_move(int x, int y) {}
+bool Rook::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  if (getY() == y && x < 7 && x >= 0)
+    return true;
+}
 void Rook::move(int x, int y) {
   if (validate_move(x, y)) {
   }
