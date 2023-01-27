@@ -1,5 +1,6 @@
 #include "Piece.hpp"
-#include <string>
+
+#include <math.h>
 
 using namespace std;
 
@@ -13,7 +14,8 @@ Piece::Piece(int x, int y, bool color, ChessBoard* board)
 /*                     King                     */
 /* -------------------------------------------- */
 
-King::King(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+King::King(int x, int y, bool color, ChessBoard* board)
+    : Piece(x, y, color, board) {}
 bool King::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;
@@ -36,7 +38,8 @@ void King::move(int x, int y) {
 /*                     Queen                    */
 /* -------------------------------------------- */
 
-Queen::Queen(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+Queen::Queen(int x, int y, bool color, ChessBoard* board)
+    : Piece(x, y, color, board) {}
 bool Queen::validate_move(int x, int y) {
   if (x > 8 || x < 0 || y > 7 || y < 7)
     return false;
@@ -77,7 +80,8 @@ void Rook::move(int x, int y) {
 /* -------------------------------------------- */
 /*                    Knight                    */
 /* -------------------------------------------- */
-Knight::Knight(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+Knight::Knight(int x, int y, bool color, ChessBoard* board)
+    : Piece(x, y, color, board) {}
 bool Knight::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;

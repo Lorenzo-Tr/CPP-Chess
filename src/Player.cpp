@@ -1,3 +1,3 @@
 #include "Player.hpp"
 
-Player::Player() {}
+Player::Player(string name, bool color) : name_(name), color_(color) {}
