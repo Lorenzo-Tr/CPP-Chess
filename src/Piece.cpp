@@ -1,4 +1,7 @@
 #include "Piece.hpp"
+#include <string>
+
+using namespace std;
 
 /* -------------------------------------------- */
 /*                     Piece                    */
@@ -9,9 +12,21 @@ Piece::Piece(int x, int y, bool color, ChessBoard* board)
 /* -------------------------------------------- */
 /*                     King                     */
 /* -------------------------------------------- */
-King::King(int x, int y, bool color, ChessBoard* board)
-    : Piece(x, y, color, board) {}
-bool King::validate_move(int x, int y) {}
+
+King::King(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+bool King::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  int diffX = getX() - x;
+  int diffY = getY() - y;
+
+  if (diffX == 1 || diffX == -1 || diffY == 1 || diffY == -1)
+    return true;
+
+  return false;
+}
+
 void King::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -20,9 +35,23 @@ void King::move(int x, int y) {
 /* -------------------------------------------- */
 /*                     Queen                    */
 /* -------------------------------------------- */
-Queen::Queen(int x, int y, bool color, ChessBoard* board)
-    : Piece(x, y, color, board) {}
-bool Queen::validate_move(int x, int y) {}
+
+Queen::Queen(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+bool Queen::validate_move(int x, int y) {
+  if (x > 8 || x < 0 || y > 7 || y < 7)
+    return false;
+
+  if (getY() == y && x < 7 && x >= 0)
+    return true;
+
+  int diffX = abs(getX() - x);
+  int diffY = abs(getY() - y);
+
+  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY)
+    return true;
+
+  return false;
+}
 void Queen::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -42,9 +71,19 @@ void Rook::move(int x, int y) {
 /* -------------------------------------------- */
 /*                    Knight                    */
 /* -------------------------------------------- */
-Knight::Knight(int x, int y, bool color, ChessBoard* board)
-    : Piece(x, y, color, board) {}
-bool Knight::validate_move(int x, int y) {}
+Knight::Knight(int x, int y, bool color, ChessBoard* board) : Piece(x, y, color, board) {}
+bool Knight::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  int diffX = abs(getX() - x);
+  int diffY = abs(getY() - y);
+
+  if (diffX == 2 && diffY == 1 || diffX == 1 && diffY == 2)
+    return true;
+
+  return false;
+}
 void Knight::move(int x, int y) {
   if (validate_move(x, y)) {
   }

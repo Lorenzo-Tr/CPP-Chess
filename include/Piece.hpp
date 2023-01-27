@@ -10,10 +10,14 @@ class Piece {
   ChessBoard* board_;
 
  public:
+
   Piece(int x, int y, bool color, ChessBoard* board);
   inline bool getColor() { return color_; }
   inline ChessBoard* getBoard() { return board_; }
   inline void setBoard(ChessBoard* board) { board_ = board; }
+  inline int getX() { return x_; }
+  inline int getY() { return y_; }
+
 
   // Check if is a valid move
   virtual bool validate_move(int x, int y) = 0;
