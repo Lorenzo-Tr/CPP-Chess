@@ -15,26 +15,31 @@ class Piece {
 
 class King : public Piece {
  public:
+  King(int x, int y, bool color);
   void validate_move(int x, int y);
 };
 
 class Queen : public Piece {
  public:
+  Queen(int x, int y, bool color);
   void validate_move(int x, int y);
 };
 
 class Rook : public Piece {
  public:
+  Rook(int x, int y, bool color);
   void validate_move(int x, int y);
 };
 
 class Knight : public Piece {
  public:
+  Knight(int x, int y, bool color);
   void validate_move(int x, int y);
 };
 
 class Bishop : public Piece {
  public:
+  Bishop(int x, int y, bool color);
   void validate_move(int x, int y);
 };
 
