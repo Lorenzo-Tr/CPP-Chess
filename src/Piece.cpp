@@ -39,7 +39,18 @@ void Rook::move(int x, int y) {
 /*                    Knight                    */
 /* -------------------------------------------- */
 Knight::Knight(int x, int y, bool color) : Piece(x, y, color) {}
-bool Knight::validate_move(int x, int y) {}
+bool Knight::validate_move(int x, int y) {
+  if (x > 7 || x < 0 || y > 7 || y < 0)
+    return false;
+
+  int diffX = abs(getX() - x);
+  int diffY = abs(getY() - y);
+
+  if (diffX == 2 && diffY == 1 || diffX == 1 && diffY == 2)
+    return true;
+
+  return false;
+}
 void Knight::move(int x, int y) {
   if (validate_move(x, y)) {
   }
