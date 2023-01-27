@@ -19,7 +19,17 @@ void King::move(int x, int y) {
 /*                     Queen                    */
 /* -------------------------------------------- */
 Queen::Queen(int x, int y, bool color) : Piece(x, y, color) {}
-bool Queen::validate_move(int x, int y) {}
+bool Queen::validate_move(int x, int y) {
+  if (x > 8 || x < 0 || y > 7 || y < 7)
+    return false;
+  if (getY() == y && x < 7 && x >= 0)
+    return true;
+  int diffX = abs(getX() - x);
+  int diffY = abs(getY() - y);
+  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY)
+    return true;
+  return false;
+}
 void Queen::move(int x, int y) {
   if (validate_move(x, y)) {
   }
