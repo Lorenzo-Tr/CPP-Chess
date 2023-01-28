@@ -3,11 +3,16 @@
 class ChessBoard {
  private:
   int* board_;
+  bool* castle_rights_;
+  int* in_passing_;
 
  public:
   ChessBoard();
+  ~ChessBoard();
 
   inline int* getBoard() { return board_; }
+  inline bool* getCastle_rights() { return castle_rights_; }
+  inline int* getInPassing() { return in_passing_; }
 
   void print();
   // Check if the move is valide

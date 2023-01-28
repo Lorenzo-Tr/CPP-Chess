@@ -13,9 +13,9 @@ Piece::Piece(int x, int y, bool color, ChessBoard* board)
 /* -------------------------------------------- */
 /*                     King                     */
 /* -------------------------------------------- */
-
 King::King(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
+
 bool King::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;
@@ -37,9 +37,9 @@ void King::move(int x, int y) {
 /* -------------------------------------------- */
 /*                     Queen                    */
 /* -------------------------------------------- */
-
 Queen::Queen(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
+
 bool Queen::validate_move(int x, int y) {
   if (x > 8 || x < 0 || y > 7 || y < 7)
     return false;
@@ -92,6 +92,7 @@ bool Queen::validate_move(int x, int y) {
   }
   return false;
 }
+
 void Queen::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -102,6 +103,7 @@ void Queen::move(int x, int y) {
 /* -------------------------------------------- */
 Rook::Rook(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
+
 bool Rook::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;
@@ -111,6 +113,7 @@ bool Rook::validate_move(int x, int y) {
 
   return false;
 }
+
 void Rook::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -121,6 +124,7 @@ void Rook::move(int x, int y) {
 /* -------------------------------------------- */
 Knight::Knight(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
+
 bool Knight::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;
@@ -133,6 +137,7 @@ bool Knight::validate_move(int x, int y) {
 
   return false;
 }
+
 void Knight::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -143,6 +148,7 @@ void Knight::move(int x, int y) {
 /* -------------------------------------------- */
 Bishop::Bishop(int x, int y, bool color, ChessBoard* board)
     : Piece(x, y, color, board) {}
+
 bool Bishop::validate_move(int x, int y) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
     return false;
@@ -155,6 +161,7 @@ bool Bishop::validate_move(int x, int y) {
 
   return false;
 }
+
 void Bishop::move(int x, int y) {
   if (validate_move(x, y)) {
   }
@@ -191,6 +198,7 @@ bool Pawn::validate_move(int x, int y) {
 
   return false;
 }
+
 void Pawn::move(int x, int y) {
   if (validate_move(x, y)) {
     already_move_ = true;

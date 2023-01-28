@@ -25,7 +25,8 @@ SRC_NAME=main.cpp\
   ChessBoard.cpp\
   Piece.cpp\
   Player.cpp\
-  Game.cpp
+  Game.cpp\
+  Utils.cpp
 
 SRC=$(addprefix $(SRC_PATH),$(SRC_NAME))
 
@@ -33,7 +34,8 @@ INC_PATH=include/
 INC_NAME=ChessBoard.hpp\
   Piece.hpp\
   Player.hpp\
-  Game.hpp
+  Game.hpp\
+  Utils.hpp
 
 INC=$(addprefix $(INC_PATH),$(INC_NAME))
 
