@@ -12,7 +12,7 @@ class Game {
   list<string> historical_;
 
  public:
-  Game();
+  Game(string fen);
   inline ChessBoard GetChessBoard() const { return chessboard_; }
   inline E_Color GetActualPlayer() const { return actual_player_; }
   inline list<string> GetHistorical() const { return historical_; }

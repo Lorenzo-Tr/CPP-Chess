@@ -7,13 +7,31 @@ using namespace std;
 /* -------------------------------------------- */
 /*                     Piece                    */
 /* -------------------------------------------- */
-Piece::Piece(int x, int y, bool color, ChessBoard* board)
+Piece::Piece() {}
+Piece::Piece(int x, int y, E_Color color, ChessBoard* board)
     : x_(x), y_(y), color_(color), board_(board) {}
+
+string Piece::getType() {
+  return nullptr;
+}
+
+const string Piece::to_string() const {
+  return ".";
+}
+
+bool Piece::operator!=(const string& s) {
+  return getType() != s;
+}
+
+ostream& operator<<(ostream& os, const Piece& p) {
+  os << p.to_string();
+  return os;
+}
 
 /* -------------------------------------------- */
 /*                     King                     */
 /* -------------------------------------------- */
-King::King(int x, int y, bool color, ChessBoard* board)
+King::King(int x, int y, E_Color color, ChessBoard* board)
     : Piece(x, y, color, board) {}
 
 bool King::validate_move(int x, int y) {
@@ -34,10 +52,22 @@ void King::move(int x, int y) {
   }
 }
 
+string King::getType() {
+  return "king";
+}
+
+const string King::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "K";
+  } else {
+    return "k";
+  }
+}
+
 /* -------------------------------------------- */
 /*                     Queen                    */
 /* -------------------------------------------- */
-Queen::Queen(int x, int y, bool color, ChessBoard* board)
+Queen::Queen(int x, int y, E_Color color, ChessBoard* board)
     : Piece(x, y, color, board) {}
 
 bool Queen::validate_move(int x, int y) {
@@ -98,10 +128,22 @@ void Queen::move(int x, int y) {
   }
 }
 
+string Queen::getType() {
+  return "queen";
+}
+
+const string Queen::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "Q";
+  } else {
+    return "q";
+  }
+}
+
 /* -------------------------------------------- */
 /*                     Rook                     */
 /* -------------------------------------------- */
-Rook::Rook(int x, int y, bool color, ChessBoard* board)
+Rook::Rook(int x, int y, E_Color color, ChessBoard* board)
     : Piece(x, y, color, board) {}
 
 bool Rook::validate_move(int x, int y) {
@@ -119,10 +161,22 @@ void Rook::move(int x, int y) {
   }
 }
 
+string Rook::getType() {
+  return "rook";
+}
+
+const string Rook::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "R";
+  } else {
+    return "r";
+  }
+}
+
 /* -------------------------------------------- */
 /*                    Knight                    */
 /* -------------------------------------------- */
-Knight::Knight(int x, int y, bool color, ChessBoard* board)
+Knight::Knight(int x, int y, E_Color color, ChessBoard* board)
     : Piece(x, y, color, board) {}
 
 bool Knight::validate_move(int x, int y) {
@@ -143,10 +197,22 @@ void Knight::move(int x, int y) {
   }
 }
 
+string Knight::getType() {
+  return "knight";
+}
+
+const string Knight::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "N";
+  } else {
+    return "n";
+  }
+}
+
 /* -------------------------------------------- */
 /*                    Bishop                    */
 /* -------------------------------------------- */
-Bishop::Bishop(int x, int y, bool color, ChessBoard* board)
+Bishop::Bishop(int x, int y, E_Color color, ChessBoard* board)
     : Piece(x, y, color, board) {}
 
 bool Bishop::validate_move(int x, int y) {
@@ -167,10 +233,22 @@ void Bishop::move(int x, int y) {
   }
 }
 
+string Bishop::getType() {
+  return "bishop";
+}
+
+const string Bishop::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "B";
+  } else {
+    return "b";
+  }
+}
+
 /* -------------------------------------------- */
 /*                     Pawn                     */
 /* -------------------------------------------- */
-Pawn::Pawn(int x, int y, bool color, bool already_move, ChessBoard* board)
+Pawn::Pawn(int x, int y, E_Color color, bool already_move, ChessBoard* board)
     : Piece(x, y, color, board), already_move_(already_move) {}
 
 bool Pawn::validate_move(int x, int y) {
@@ -181,7 +259,7 @@ bool Pawn::validate_move(int x, int y) {
   int diffY = abs(getY() - y);
 
   for (int i = getY(); i <= y; i++) {
-    if (getBoard()[getX() * 8 + i] != 0) {
+    if (getBoard()[getX() * 8 + i] != nullptr) {
       return false;
     }
   }
@@ -202,6 +280,18 @@ bool Pawn::validate_move(int x, int y) {
 void Pawn::move(int x, int y) {
   if (validate_move(x, y)) {
     already_move_ = true;
+  }
+}
+
+string Pawn::getType() {
+  return "pawn";
+}
+
+const string Pawn::to_string() const {
+  if (this->getColor() == E_Color::WHITE) {
+    return "P";
+  } else {
+    return "p";
   }
 }
 

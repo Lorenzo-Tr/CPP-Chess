@@ -1,18 +1,22 @@
 #pragma once
 
+#include <Piece.hpp>
+#include <array>
+
+using namespace std;
+
 class ChessBoard {
  private:
-  int* board_;
-  bool* castle_rights_;
-  int* in_passing_;
+  array<Piece*, 64> board_;        // int[64]
+  array<bool, 4> castle_rights_;  // bool[4]
+  array<int, 2> in_passing_;      // int[2]
 
  public:
   ChessBoard();
-  ~ChessBoard();
 
-  inline int* getBoard() { return board_; }
-  inline bool* getCastle_rights() { return castle_rights_; }
-  inline int* getInPassing() { return in_passing_; }
+  inline array<Piece*, 64> getBoard() { return board_; }
+  inline array<bool, 4> getCastle_rights() { return castle_rights_; }
+  inline array<int, 2> getInPassing() { return in_passing_; }
 
   void print();
   // Check if the move is valide
