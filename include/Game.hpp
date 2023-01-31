@@ -12,7 +12,8 @@ class Game {
   list<string> historical_;
 
  public:
-  Game(string fen);
+  Game(const string& fen =
+           "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
   inline ChessBoard GetChessBoard() const { return chessboard_; }
   inline E_Color GetActualPlayer() const { return actual_player_; }
   inline list<string> GetHistorical() const { return historical_; }

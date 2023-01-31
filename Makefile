@@ -22,8 +22,8 @@ endif
 
 SRC_PATH=src/
 SRC_NAME=main.cpp\
-  ChessBoard.cpp\
   Piece.cpp\
+  ChessBoard.cpp\
   Player.cpp\
   Game.cpp\
   Utils.cpp
@@ -31,11 +31,12 @@ SRC_NAME=main.cpp\
 SRC=$(addprefix $(SRC_PATH),$(SRC_NAME))
 
 INC_PATH=include/
-INC_NAME=ChessBoard.hpp\
-  Piece.hpp\
+INC_NAME=Piece.hpp\
+  ChessBoard.hpp\
   Player.hpp\
   Game.hpp\
-  Utils.hpp
+  Utils.hpp\
+  E_Color.hpp
 
 INC=$(addprefix $(INC_PATH),$(INC_NAME))
 

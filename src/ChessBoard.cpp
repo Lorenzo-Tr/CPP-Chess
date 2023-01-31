@@ -6,7 +6,7 @@
 
 using namespace std;
 
-ChessBoard::ChessBoard() : board_(), castle_rights_(), in_passing_() {
+ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
   for (int i = 0; i < 4; i++)
     castle_rights_[i] = false;
 }

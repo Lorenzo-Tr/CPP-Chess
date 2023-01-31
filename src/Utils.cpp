@@ -3,155 +3,136 @@
 
 using namespace std;
 
-char Utils::int_to_char_piece(int value) {
-  char letter;
-  int tmp_value;
-
-  tmp_value = value > 10 ? value - 10 : value;
-
-  switch (tmp_value) {
-    case 1:
-      letter = 'r';  // Rook
-      break;
-    case 2:
-      letter = 'n';  // Knight
-      break;
-    case 3:
-      letter = 'b';  // Bishop
-      break;
-    case 4:
-      letter = 'q';  // Queen
-      break;
-    case 5:
-      letter = 'k';  // King
-      break;
-    case 6:
-      letter = 'p';  // Pawn
-      break;
+Piece* Utils::char_to_piece(int index, char letter) {
+  Piece* value;
+  int x, y;
+  for (y = 0; y < 8; y++) {
+    for (x = 0; x < 8; x++) {
+      if ((y + 1) * x == index) {
+        break;
+      }
+    }
   }
-
-  if (value > 10)
-    return toupper(letter);
-
-  return letter;
-}
-
-int Utils::char_to_int_piece(char letter) {
-  int value;
 
   switch (letter) {
     case 'r':
-      value = 1;  // Rook
+      value = new Rook(x, y, E_Color::BLACK);  // Rook
       break;
     case 'n':
-      value = 2;  // Knight
+      value = new Knight(x, y, E_Color::BLACK);  // Knight
       break;
     case 'b':
-      value = 3;  // Bishop
+      value = new Bishop(x, y, E_Color::BLACK);  // Bishop
       break;
     case 'q':
-      value = 4;  // Queen
+      value = new Queen(x, y, E_Color::BLACK);  // Queen
       break;
     case 'k':
-      value = 5;  // King
+      value = new King(x, y, E_Color::BLACK);  // King
       break;
     case 'p':
-      value = 6;  // Pawn
+      value = new Pawn(x, y, E_Color::BLACK, false);  // Pawn
       break;
     case 'R':
-      value = 11;  // Rook
+      value = new Rook(x, y, E_Color::WHITE);  // Rook
       break;
     case 'N':
-      value = 12;  // Knight
+      value = new Knight(x, y, E_Color::WHITE);  // Knight
       break;
     case 'B':
-      value = 13;  // Bishop
+      value = new Bishop(x, y, E_Color::WHITE);  // Bishop
       break;
     case 'Q':
-      value = 14;  // Queen
+      value = new Queen(x, y, E_Color::WHITE);  // Queen
       break;
     case 'K':
-      value = 15;  // King
+      value = new King(x, y, E_Color::WHITE);  // King
       break;
     case 'P':
-      value = 16;  // Pawn
+      value = new Pawn(x, y, E_Color::WHITE, false);  // Pawn
       break;
   }
 
   return value;
 }
 
-void Utils::move_iterator(string::const_iterator it) {
-  while (*it == ' ')
-    it++;
-}
-
-string::const_iterator Utils::parse_board(string::const_iterator it,
-                                          string::const_iterator end,
-                                          int* board) {
-  int i = 0;
-  while (it != end) {
-    if (*it == ' ')
-      break;
-
+string::const_iterator Utils::parse_board(std::string::const_iterator it,
+                                          std::string::const_iterator end,
+                                          std::array<Piece*, 64>& board) {
+  int index = 0;
+  while (it != end && *it != ' ') {
     if (*it == '/') {
-      it++;
+      ++it;
       continue;
     }
 
     if (isdigit(*it)) {
-      i += (*it - '0');  // converts char digit to int. `5` to 5
+      index += *it - '0';
     } else {
-      board[i] = char_to_int_piece(*it);
-      ++i;
+      board[index] = char_to_piece(index, *it);
+      index++;
     }
-    it++;
+    ++it;
   }
-  move_iterator(++it);
+  it++;
   return it;
 }
 
-string::const_iterator Utils::parse_turn(string::const_iterator it,
-                                         E_Color* turn) {
-  *turn = *it == 'w' ? E_Color::WHITE : E_Color::BLACK;
-  move_iterator(++it);
+string::const_iterator Utils::parse_turn(std::string::const_iterator it,
+                                         E_Color& turn) {
+  turn = *it == 'w' ? E_Color::WHITE : E_Color::BLACK;
+  ++it;
   return it;
 }
 
-string::const_iterator Utils::parse_castle_rights(string::const_iterator it,
-                                                  string::const_iterator end,
-                                                  bool* castle_rights) {
-  while ((it != end)) {
+string::const_iterator Utils::parse_castle_rights(
+    std::string::const_iterator it,
+    std::string::const_iterator end,
+    std::array<bool, 4>& castle_rights) {
+  castle_rights.fill(false);
+  while (it != end && *it != ' ') {
     switch (*it) {
       case 'k':
-        castle_rights[E_Color::BLACK] = true;
+        castle_rights[0] = true;
         break;
       case 'K':
-        castle_rights[E_Color::WHITE] = true;
+        castle_rights[1] = true;
         break;
       case 'q':
-        castle_rights[E_Color::BLACK + 2] = true;
+        castle_rights[2] = true;
         break;
       case 'Q':
-        castle_rights[E_Color::WHITE + 2] = true;
+        castle_rights[3] = true;
         break;
     }
-    it++;
+    ++it;
   }
-
-  move_iterator(it);
   return it;
+}
+
+string::const_iterator Utils::parse_en_passant(string::const_iterator it,
+                                               array<int, 2>& en_passant) {
+  if (*it == '-') {
+    en_passant[0] = -1;
+    en_passant[1] = -1;
+  } else {
+    en_passant[0] = 8 * (8 - (*(it + 1) - '0')) + (*it - 'a');
+    en_passant[1] = *(it + 2) == 'w' ? 1 : 0;
+  }
+  move_iterator(it + 3);
+  return it + 3;
 }
 
 void Utils::parse_fen(const string& fen_code,
-                      int* board,
-                      E_Color* turn,
-                      bool* castle_rights) {
+                      array<Piece*, 64>& board,
+                      E_Color& turn,
+                      array<bool, 4>& castle_rights,
+                      array<int, 2>& en_passant) {
   auto it = fen_code.begin();
   auto end = fen_code.end();
 
   it = parse_board(it, end, board);
   it = parse_turn(it, turn);
   it = parse_castle_rights(it, end, castle_rights);
-  // en_passant = fen_code.substr(*it, 3);
+  it = parse_en_passant(it, en_passant);
 }
