@@ -5,7 +5,12 @@ using namespace std;
 
 int main() {
   Game game;
-  game.GetChessBoard().print();
+
+  while (1) {
+    game.GetChessBoard().print();
+    cout << endl;
+    game.GetActualPlayer().read_move();
+  }
 
   return 0;
 }

@@ -1,7 +1,8 @@
 #pragma once
+#include <E_Color.hpp>
+#include <array>
 #include <iostream>
 #include <string>
-#include <E_Color.hpp>
 using namespace std;
 class Player {
  private:
@@ -9,8 +10,11 @@ class Player {
   E_Color color_;
 
  public:
+  Player();
   Player(string name, E_Color color);
-  string getColor();
+  inline E_Color getColor() { return color_; }
+  inline string getName() { return name_; }
+
   int play_move(int x1, int y1, int x2, int y2);
-  int read_move();
+  array<int, 2> read_move();
 };

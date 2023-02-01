@@ -16,7 +16,15 @@ class ChessBoard {
 
   inline array<Piece*, 64> getBoard() { return board_; }
   inline array<bool, 4> getCastle_rights() { return castle_rights_; }
-  inline array<int, 2> getEnPassant_() { return en_passant_; }
+  inline array<int, 2> getEnPassant() { return en_passant_; }
+
+  inline void setBoard(array<Piece*, 64> board) { board_ = board; }
+  inline void setCastleRights(array<bool, 4> castle_rights) {
+    castle_rights_ = castle_rights;
+  }
+  inline void setEnPassant(array<int, 2> en_passant) {
+    en_passant_ = en_passant;
+  }
 
   void print();
   // Check if the move is valide
