@@ -94,9 +94,9 @@ bool Game::check_echec(int x, int y) {
       if (x > 7 || x < 0 || y > 7 || y < 0) {
         if (board[i * 8 + j]->getType() == "queen" ||
             board[i * 8 + j]->getType() == "bishop" ||
-            (board[i * 8 + j]->getType() == "king" &&
-             (diffx && diffy == 1))(player == board[i * 8 + j]->getColor() &&
-                                    board[i * 8 + j]->getType() == "pawn")) {
+            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1)) ||
+            (player == board[i * 8 + j]->getColor() &&
+             board[i * 8 + j]->getType() == "pawn")) {
           return true;
         }
       }
