@@ -27,39 +27,49 @@ void Game::change_player(E_Color color) {
 }
 
 bool Game::check_echec(int x, int y) {
-  // E_Color player = actual_player_.getColor();
+  E_Color player = actual_player_.getColor();
   array<Piece*, 64> board = chessboard_.getBoard();
   // check ligne
   for (int i = 0; i < 8; i++) {
+    int diffx = abs(i - x);
+
     if (board[i * 8 + y]->getType() == "queen" ||
-        board[i * 8 + y]->getType() == "rook")
+        board[i * 8 + y]->getType() == "rook" ||
+        (board[i * 8 + y]->getType() == "king" && (diffx == 1)))
       return true;
   }
   // check colomn
   for (int j = y; j < 8; j++) {
+    int diffy = abs(j - y);
     if (board[x * 8 + j]->getType() == "queen" ||
-        board[x * 8 + j]->getType() == "rook") {
+        board[x * 8 + j]->getType() == "rook" ||
+        (board[x * 8 + j]->getType() == "king" && (diffy == 1))) {
       return true;
     }
   }
   // check diagonale
   for (int i = x; i < 8; i++) {
     for (int j = y; j >= 0; j--) {
+      int diffx = abs(i - x);
+      int diffy = abs(j - y);
       if (board[i * 8 + j]->getType() == "queen" ||
-          board[i * 8 + j]->getType() == "bishop")
+          board[i * 8 + j]->getType() == "bishop" ||
+          (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1)) ||
+          (player == board[i * 8 + j]->getColor() &&
+           board[i * 8 + j]->getType() == "pawn"))
         if (x > 7 || x < 0 || y > 7 || y < 0) {
-          if (board[i * 8 + j]->getType() == "queen" ||
-              board[i * 8 + j]->getType() == "bishop") {
-            return true;
-          }
+          return true;
         }
     }
   }
   for (int i = x; i < 8; i++) {
     for (int j = y; j < 8; j++) {
+      int diffx = abs(i - x);
+      int diffy = abs(j - y);
       if (x > 7 || x < 0 || y > 7 || y < 0) {
         if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop") {
+            board[i * 8 + j]->getType() == "bishop" ||
+            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1))) {
           return true;
         }
       }
@@ -67,9 +77,12 @@ bool Game::check_echec(int x, int y) {
   }
   for (int i = x; i >= 0; i--) {
     for (int j = y; j < 8; j++) {
+      int diffx = abs(i - x);
+      int diffy = abs(j - y);
       if (x > 7 || x < 0 || y > 7 || y < 0) {
         if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop") {
+            board[i * 8 + j]->getType() == "bishop" ||
+            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1))) {
           return true;
         }
       }
@@ -77,9 +90,14 @@ bool Game::check_echec(int x, int y) {
   }
   for (int i = x; i >= 0; i--) {
     for (int j = y; j >= 0; j--) {
+      int diffx = abs(i - x);
+      int diffy = abs(j - y);
       if (x > 7 || x < 0 || y > 7 || y < 0) {
         if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop") {
+            board[i * 8 + j]->getType() == "bishop" ||
+            (board[i * 8 + j]->getType() == "king" &&
+             (diffx && diffy == 1))(player == board[i * 8 + j]->getColor() &&
+                                    board[i * 8 + j]->getType() == "pawn")) {
           return true;
         }
       }
@@ -100,20 +118,8 @@ bool Game::check_echec(int x, int y) {
 
   // check Pawn
 
-  if (board[(x + 1) + (y - 1)]->getType() == "pawn" ||
-      board[(x - 1) + (y - 1)]->getType() == "pawn")
-    return true;
-
-  // check King
-  bool KingRight = board[(x + 1)]->getType() == "king";
-  bool KingLeft = board[(x - 1)]->getType() == "king";
-  bool KingTop = board[(y + 1)]->getType() == "king";
-  bool KingBot = board[(y - 1)]->getType() == "king";
-  bool KingTopRight = board[(x + 1) + (y - 1)]->getType() == "king";
-  bool KingTopLeft = board[(x - 1) + (y - 1)]->getType() == "king";
-  bool KingBotRight = board[(x + 1) + (y + 1)]->getType() == "king";
-  bool KingBotLeft = board[(x - 1) + (y + 1)]->getType() == "king";
-  if (KingRight || KingLeft || KingTop || KingBot || KingTopRight ||
-      KingTopLeft || KingBotRight || KingBotLeft)
-    return true;
+  for (int)
+    if (board[(x + 1) + (y - 1)]->getType() == "pawn" ||
+        board[(x - 1) + (y - 1)]->getType() == "pawn")
+      return true;
 }
