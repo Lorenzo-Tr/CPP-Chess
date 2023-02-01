@@ -119,7 +119,6 @@ string::const_iterator Utils::parse_en_passant(string::const_iterator it,
     en_passant[0] = 8 * (8 - (*(it + 1) - '0')) + (*it - 'a');
     en_passant[1] = *(it + 2) == 'w' ? 1 : 0;
   }
-  move_iterator(it + 3);
   return it + 3;
 }
 
