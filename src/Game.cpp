@@ -1,7 +1,6 @@
 #include "Game.hpp"
 #include <iostream>
 #include "E_Color.hpp"
-#include "Piece.cpp"
 #include "Utils.hpp"
 
 using namespace std;
@@ -116,10 +115,5 @@ bool Game::check_echec(int x, int y) {
   if (knightright || knightleft || knightbot || knighttop)
     return true;
 
-  // check Pawn
-
-  for (int)
-    if (board[(x + 1) + (y - 1)]->getType() == "pawn" ||
-        board[(x - 1) + (y - 1)]->getType() == "pawn")
-      return true;
+  return false;
 }

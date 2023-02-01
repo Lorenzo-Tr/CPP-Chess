@@ -18,42 +18,45 @@ int Player::play_move(int x1, int y1, int x2, int y2) {
 
 array<int, 2> Player::read_move() {
   string move;
-  char* copy_move;
+  bool read = true;
   char* token;
   array<int, 2> coordinate;
-  int i = 0;
 
   cout << getColor() << " : Enter your move \"x y\": " << endl;
-  getline(cin, move);
-  // pos = move.find(split_char);
-  // token = move.substr(0, pos);
-  // move.erase(0, pos + 1);
-  // coordinate[0] = atoi(token.c_str());
-  // coordinate[1] = atoi(move.c_str());
-  memcpy(copy_move, move.c_str(), move.size());
-  token = strtok(copy_move, " ");
-  while (token != NULL) {
-    coordinate[i] = atoi(token);
-    token = strtok(NULL, " ");
-    i++;
+  while (read) {
+    int i = 0;
+    bool valid_token = true;
+    getline(cin, move);
+
+    char* copy_move = strdup(move.c_str());
+    token = strtok(copy_move, " ");
+    while (token != NULL) {
+      if (atoi(token) < 0 || atoi(token) > 7) {
+        cout << "Invalide position 0 <= index < 8" << endl;
+        valid_token = false;
+        break;
+      }
+      if (i > 1) {
+        cout << "Invalide number of argument" << endl;
+        valid_token = false;
+        break;
+      }
+      coordinate[i] = atoi(token);
+      token = strtok(NULL, " ");
+      i++;
+    }
+    if (valid_token) {
+      if ((i - 1) != 1) {
+        cout << "Invalide number of argument" << endl;
+        continue;
+      }
+      read = false;
+    }
   }
-  // for ();
-  // cout << move << endl;
 
   for (auto it = coordinate.begin(); it != coordinate.end(); ++it) {
     cout << *it << endl;
   }
-
-  // Keep printing tokens while one of the
-  // delimiters present in str[].
-  while (token != NULL) {
-    printf("%s\n", token);
-    token = strtok(NULL, "-");
-  }
-
-  // getline(cin, move, );
-
-  // pch = strtok(move, " ");
 
   return coordinate;
 }
