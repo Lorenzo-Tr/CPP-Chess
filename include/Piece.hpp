@@ -18,6 +18,7 @@ class Piece {
   bool operator!=(const string&);
   friend ostream& operator<<(ostream& os, const Piece& p);
 
+  inline E_Color getColor() { return color_; }
   virtual string getType();
   virtual const string toString() const;
   // Check if is a valid move
