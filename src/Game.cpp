@@ -1,7 +1,6 @@
 #include "Game.hpp"
 #include <iostream>
 #include "E_Color.hpp"
-#include "Piece.cpp"
 #include "Utils.hpp"
 
 using namespace std;
@@ -116,4 +115,6 @@ bool Game::check_echec(int x, int y) {
   if (KingRight || KingLeft || KingTop || KingBot || KingTopRight ||
       KingTopLeft || KingBotRight || KingBotLeft)
     return true;
+
+  return false;
 }
