@@ -16,42 +16,34 @@ int Player::play_move(int x1, int y1, int x2, int y2) {
   return 0;
 }
 
-array<int, 2> Player::read_move() {
+array<int, 4> Player::read_move() {
   string move;
   bool read = true;
-  char* token;
-  array<int, 2> coordinate;
+  array<int, 4> coordinate;
+  bool from = true;
 
-  cout << getColor() << " : Enter your move \"x y\": " << endl;
   while (read) {
-    int i = 0;
-    bool valid_token = true;
-    getline(cin, move);
+    const string& text = from ? " : Enter the piece you want to move \"x y\": "
+                              : " : Enter where want to move \"x y\": ";
+    cout << getColor() << text << endl;
+    int i = from ? 0 : 2;
 
-    char* copy_move = strdup(move.c_str());
-    token = strtok(copy_move, " ");
-    while (token != NULL) {
-      if (atoi(token) < 0 || atoi(token) > 7) {
-        cout << "Invalide position 0 <= index < 8" << endl;
-        valid_token = false;
-        break;
-      }
-      if (i > 1) {
-        cout << "Invalide number of argument" << endl;
-        valid_token = false;
-        break;
-      }
-      coordinate[i] = atoi(token);
-      token = strtok(NULL, " ");
-      i++;
+    getline(cin, move);
+    istringstream iss(move);
+    int x, y;
+    if (!(iss >> x >> y) || x < 0 || x > 7 || y < 0 || y > 7) {
+      cout << "Invalid position, the values should be between 0 and 7." << endl;
+      continue;
     }
-    if (valid_token) {
-      if ((i - 1) != 1) {
-        cout << "Invalide number of argument" << endl;
-        continue;
-      }
-      read = false;
+
+    coordinate[i] = x;
+    coordinate[i + 1] = y;
+    if (from) {
+      from = false;
+      continue;
     }
+
+    read = false;
   }
 
   for (auto it = coordinate.begin(); it != coordinate.end(); ++it) {

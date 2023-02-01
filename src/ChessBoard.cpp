@@ -26,6 +26,8 @@ ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
 
 void ChessBoard::print() {
   // clear();
+  cout << endl;
+
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       if (board_[i * 8 + j] != 0) {
@@ -34,6 +36,12 @@ void ChessBoard::print() {
         cout << ". ";
       }
     }
-    cout << endl;
+    cout << "  " << i << endl;
   }
+
+  cout << endl;
+  for (int j = 0; j < 8; j++) {
+    cout << j << " ";
+  }
+  cout << endl;
 }

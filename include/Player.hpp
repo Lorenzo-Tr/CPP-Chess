@@ -16,5 +16,5 @@ class Player {
   inline string getName() { return name_; }
 
   int play_move(int x1, int y1, int x2, int y2);
-  array<int, 2> read_move();
+  array<int, 4> read_move();
 };
