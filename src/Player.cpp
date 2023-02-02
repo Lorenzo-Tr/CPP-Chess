@@ -42,6 +42,7 @@ array<int, 4> Player::read_move() {
     coordinate[i] = x;
     coordinate[i + 1] = y;
     if (from) {
+      chessboard_.print_playable_move(x, y);
       from = false;
       continue;
     }

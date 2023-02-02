@@ -318,7 +318,7 @@ bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
   int diffY = abs(y_ - y);
 
   for (int i = y_; i <= y; i++) {
-    if (board[x_ * 8 + i] != nullptr) {
+    if (board[i * 8 + x_] != nullptr) {
       return false;
     }
   }
@@ -335,7 +335,7 @@ bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
     }
   }
 
-  if (diffY == 1 && diffX == 1 && board[x * 8 + y] != 0) {
+  if (diffY == 1 && diffX == 1 && board[y * 8 + x] != 0) {
     return true;
   }
 

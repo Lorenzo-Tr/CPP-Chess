@@ -27,6 +27,7 @@ class ChessBoard {
   }
 
   void print();
+  void print_playable_move(int x, int y);
   // Check if the move is valide
   bool check_move(int x1, int y1, int x2, int y2);
   // Play a move if is a valide move

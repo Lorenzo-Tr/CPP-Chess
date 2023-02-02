@@ -40,10 +40,7 @@ bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
 }
 
 void ChessBoard::print() {
-  // clear();
   cout << endl;
-
-  // cout << board_[6 * 8 + 6] << " - " << board_[6 * 8 + 5] << endl;
 
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
@@ -51,12 +48,57 @@ void ChessBoard::print() {
         cout << *board_[i * 8 + j] << " ";
       } else {
         cout << ". ";
-        // cout << board_[i * 8 + j] << " ";
       }
     }
     cout << "  " << i << endl;
   }
 
+  cout << endl;
+  for (int j = 0; j < 8; j++) {
+    cout << j << " ";
+  }
+  cout << endl;
+}
+
+void ChessBoard::print_playable_move(int x, int y) {
+  cout << endl;
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int index = i * 8 + j;
+      if (board_[index] != nullptr) {
+        if (board_[y * 8 + x]->validate_move(j, i, board_)) {
+#if defined _WIN32
+          cout << "#" << *board_[index];
+#elif defined(__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+          cout << "\u001b[32m;1m" << *board_[index] << "\u001b[0m";
+#elif defined(__APPLE__)
+          cout << "\u001b[32m;1m" << *board_[index] << "\u001b[0m";
+#endif
+
+        } else {
+          cout << *board_[index] << " ";
+        }
+      } else {
+        if (board_[y * 8 + x]->validate_move(j, i, board_)) {
+#if defined _WIN32
+          cout << "# ";
+#elif defined(__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+          cout << "\u001b[32m;1m"
+               << ". "
+               << "\u001b[0m";
+#elif defined(__APPLE__)
+          cout << "\u001b[32m;1m"
+               << ". "
+               << "\u001b[0m";
+#endif
+
+        } else {
+          cout << ". ";
+        }
+      }
+    }
+    cout << "  " << i << endl;
+  }
   cout << endl;
   for (int j = 0; j < 8; j++) {
     cout << j << " ";
