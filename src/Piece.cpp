@@ -37,7 +37,7 @@ bool checkDiagonals(int x_,
 
 bool checkLine(int x_, int x, int y, const array<Piece*, 64>& board) {
   for (int i = x_; i <= x; i++) {
-    if (board[i * 8 + y] != 0) {
+    if (board[y * 8 + i] != 0) {
       return false;
     }
   }
@@ -46,7 +46,7 @@ bool checkLine(int x_, int x, int y, const array<Piece*, 64>& board) {
 
 bool checkColumn(int y_, int x, int y, const array<Piece*, 64>& board) {
   for (int j = y_; j <= y; j++) {
-    if (board[x * 8 + j] != 0) {
+    if (board[j * 8 + x] != 0) {
       return false;
     }
   }
@@ -54,8 +54,9 @@ bool checkColumn(int y_, int x, int y, const array<Piece*, 64>& board) {
 }
 
 bool checkKnight(int diffX, int diffY) {
-  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2))
+  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2)) {
     return true;
+  }
 
   return false;
 }
@@ -229,15 +230,17 @@ const string Rook::toString() const {
 Knight::Knight(int x, int y, E_Color color) : Piece(x, y, color) {}
 
 bool Knight::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  (void)board;
-  if (x > 7 || x < 0 || y > 7 || y < 0)
+  if (x > 7 || x < 0 || y > 7 || y < 0) {
     return false;
+  }
 
   int diffX = abs(x_ - x);
   int diffY = abs(y_ - y);
 
-  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2))
-    return true;
+  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2)) {
+    auto dest_piece = board[y * 8 + x];
+    return dest_piece == nullptr || dest_piece->getColor() != color_;
+  }
 
   return false;
 }
@@ -269,8 +272,9 @@ const string Knight::toString() const {
 Bishop::Bishop(int x, int y, E_Color color) : Piece(x, y, color) {}
 
 bool Bishop::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0)
+  if (x > 7 || x < 0 || y > 7 || y < 0) {
     return false;
+  }
 
   int diffX = abs(x_ - x);
   int diffY = abs(y_ - y);
@@ -311,8 +315,9 @@ Pawn::Pawn(int x, int y, E_Color color, bool already_move)
     : Piece(x, y, color), already_move_(already_move) {}
 
 bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0)
+  if (x > 7 || x < 0 || y > 7 || y < 0) {
     return false;
+  }
 
   int diffX = abs(x_ - x);
   int diffY = abs(y_ - y);

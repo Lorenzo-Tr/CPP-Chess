@@ -67,31 +67,13 @@ void ChessBoard::print_playable_move(int x, int y) {
       int index = i * 8 + j;
       if (board_[index] != nullptr) {
         if (board_[y * 8 + x]->validate_move(j, i, board_)) {
-#if defined _WIN32
           cout << "#" << *board_[index];
-#elif defined(__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
-          cout << "\u001b[32m;1m" << *board_[index] << "\u001b[0m";
-#elif defined(__APPLE__)
-          cout << "\u001b[32m;1m" << *board_[index] << "\u001b[0m";
-#endif
-
         } else {
           cout << *board_[index] << " ";
         }
       } else {
         if (board_[y * 8 + x]->validate_move(j, i, board_)) {
-#if defined _WIN32
           cout << "# ";
-#elif defined(__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
-          cout << "\u001b[32m;1m"
-               << ". "
-               << "\u001b[0m";
-#elif defined(__APPLE__)
-          cout << "\u001b[32m;1m"
-               << ". "
-               << "\u001b[0m";
-#endif
-
         } else {
           cout << ". ";
         }
