@@ -5,14 +5,8 @@ using namespace std;
 
 Piece* Utils::char_to_piece(int index, char letter) {
   Piece* value;
-  int x, y;
-  for (y = 0; y < 8; y++) {
-    for (x = 0; x < 8; x++) {
-      if ((y + 1) * x == index) {
-        break;
-      }
-    }
-  }
+  int x = index % 8;
+  int y = index / 8;
 
   switch (letter) {
     case 'r':
@@ -51,6 +45,9 @@ Piece* Utils::char_to_piece(int index, char letter) {
     case 'P':
       value = new Pawn(x, y, E_Color::WHITE, false);  // Pawn
       break;
+    default:
+      value = nullptr;
+      break;
   }
 
   return value;
@@ -74,7 +71,7 @@ string::const_iterator Utils::parse_board(std::string::const_iterator it,
     }
     ++it;
   }
-  it++;
+  ++it;
   return it;
 }
 
@@ -134,4 +131,16 @@ void Utils::parse_fen(const string& fen_code,
   it = parse_turn(it, turn);
   it = parse_castle_rights(it, end, castle_rights);
   it = parse_en_passant(it, en_passant);
+}
+
+void Utils::clear() {
+#if defined _WIN32
+  system("cls");
+  // clrscr(); // including header file : conio.h
+#elif defined(__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+  system("clear");
+  // std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences
+#elif defined(__APPLE__)
+  system("clear");
+#endif
 }

@@ -10,15 +10,15 @@ class Game {
  private:
   ChessBoard chessboard_;
   array<Player*, 2> players_;
-  Player actual_player_;
+  Player* actual_player_;
   list<string> historical_;
 
  public:
   Game(const string& fen =
            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-  inline ChessBoard GetChessBoard() const { return chessboard_; }
-  inline Player GetActualPlayer() const { return actual_player_; }
-  inline list<string> GetHistorical() const { return historical_; }
+  inline ChessBoard& GetChessBoard() { return chessboard_; }
+  inline Player* GetActualPlayer() { return actual_player_; }
+  inline list<string> GetHistorical() { return historical_; }
 
   void change_player(E_Color color);
   int cancel_move();

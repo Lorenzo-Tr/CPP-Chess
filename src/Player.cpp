@@ -2,17 +2,20 @@
 #include <string.h>
 #include <sstream>
 #include <vector>
+#include "Utils.hpp"
 
 using namespace std;
 
-Player::Player() : name_(), color_(E_Color::NONE) {}
-Player::Player(string name, E_Color color) : name_(name), color_(color) {}
+Player::Player(ChessBoard& chessboard, string name, E_Color color)
+    : chessboard_(chessboard), name_(name), color_(color) {}
 
 int Player::play_move(int x1, int y1, int x2, int y2) {
-  (void)x1;
-  (void)y1;
-  (void)x2;
-  (void)y2;
+  Utils::clear();
+  cout << "x : " << x1 << " y : " << y1 << " -> x : " << x2 << " y : " << y2
+       << endl;
+
+  chessboard_.play_move(x1, y1, x2, y2);
+
   return 0;
 }
 
@@ -44,10 +47,6 @@ array<int, 4> Player::read_move() {
     }
 
     read = false;
-  }
-
-  for (auto it = coordinate.begin(); it != coordinate.end(); ++it) {
-    cout << *it << endl;
   }
 
   return coordinate;

@@ -18,6 +18,7 @@ class Utils {
                         E_Color& color,
                         array<bool, 4>& castle_rights,
                         array<int, 2>& en_passant);
+  static void clear();
 
  private:
   static Piece* char_to_piece(int index, char letter);

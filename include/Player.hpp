@@ -3,15 +3,18 @@
 #include <array>
 #include <iostream>
 #include <string>
+#include "ChessBoard.hpp"
+
 using namespace std;
+
 class Player {
  private:
+  ChessBoard& chessboard_;
   string name_;
   E_Color color_;
 
  public:
-  Player();
-  Player(string name, E_Color color);
+  Player(ChessBoard& chessboard, string name, E_Color color);
   inline E_Color getColor() { return color_; }
   inline string getName() { return name_; }
 
