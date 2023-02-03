@@ -17,25 +17,27 @@ ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
 }
 
 bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
-  (void)x1;
-  (void)y1;
-  (void)x2;
-  (void)y2;
-  return true;
+  if (x2 > 7 || x2 < 0 || y2 > 7 || y2 < 0) {
+    return false;
+  }
+
+  if (board_[y1 * 8 + x1]->validate_move(x2, y2, board_)) {
+    return true;
+  }
+
+  return false;
 }
 
 bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
-  cout << board_[6 * 8 + 6] << " - " << board_[5 * 8 + 6] << endl;
-
   if (check_move(x1, y1, x2, y2)) {
-    if (board_[y1 * 8 + x1]->move(x2, y2, board_)) {
-      board_[y2 * 8 + x2] = board_[y1 * 8 + x1];
-      board_[y1 * 8 + x1] = nullptr;
-      return true;
-    } else {
-      cout << "Invalid move !" << endl;
-    }
+    board_[y1 * 8 + x1]->move(x2, y2);
+    board_[y2 * 8 + x2] = board_[y1 * 8 + x1];
+    board_[y1 * 8 + x1] = nullptr;
+    return true;
+  } else {
+    cout << "Invalid move !" << endl;
   }
+
   return false;
 }
 
@@ -66,13 +68,13 @@ void ChessBoard::print_playable_move(int x, int y) {
     for (int j = 0; j < 8; j++) {
       int index = i * 8 + j;
       if (board_[index] != nullptr) {
-        if (board_[y * 8 + x]->validate_move(j, i, board_)) {
+        if (check_move(x, y, j, i)) {
           cout << "#" << *board_[index];
         } else {
           cout << *board_[index] << " ";
         }
       } else {
-        if (board_[y * 8 + x]->validate_move(j, i, board_)) {
+        if (check_move(x, y, j, i)) {
           cout << "# ";
         } else {
           cout << ". ";

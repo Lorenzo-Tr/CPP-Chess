@@ -109,13 +109,9 @@ bool King::validate_move(int x, int y, const array<Piece*, 64>& board) {
   return false;
 }
 
-bool King::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void King::move(int x, int y) {
+  x_ = x;
+  y_ = y;
 }
 
 string King::getType() {
@@ -160,13 +156,9 @@ bool Queen::validate_move(int x, int y, const array<Piece*, 64>& board) {
   return false;
 }
 
-bool Queen::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void Queen::move(int x, int y) {
+  x_ = x;
+  y_ = y;
 }
 
 string Queen::getType() {
@@ -203,13 +195,9 @@ bool Rook::validate_move(int x, int y, const array<Piece*, 64>& board) {
   return false;
 }
 
-bool Rook::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void Rook::move(int x, int y) {
+  x_ = x;
+  y_ = y;
 }
 
 string Rook::getType() {
@@ -245,13 +233,9 @@ bool Knight::validate_move(int x, int y, const array<Piece*, 64>& board) {
   return false;
 }
 
-bool Knight::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void Knight::move(int x, int y) {
+  x_ = x;
+  y_ = y;
 }
 
 string Knight::getType() {
@@ -287,13 +271,9 @@ bool Bishop::validate_move(int x, int y, const array<Piece*, 64>& board) {
   return false;
 }
 
-bool Bishop::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void Bishop::move(int x, int y) {
+  x_ = x;
+  y_ = y;
 }
 
 string Bishop::getType() {
@@ -315,46 +295,44 @@ Pawn::Pawn(int x, int y, E_Color color, bool already_move)
     : Piece(x, y, color), already_move_(already_move) {}
 
 bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0) {
+  int diffX = abs(x - x_);
+  int diffY = abs(y - y_);
+
+  if (diffX > 1 || (diffX == 1 && board[y * 8 + x] == nullptr)) {
     return false;
   }
 
-  int diffX = abs(x_ - x);
-  int diffY = abs(y_ - y);
+  bool is_forward = color_ == WHITE ? y < y_ : y > y_;
+  if (!is_forward) {
+    return false;
+  }
 
-  for (int i = y_; i <= y; i++) {
-    if (board[i * 8 + x_] != nullptr) {
+  if (diffY == 2 && !already_move_) {
+    int forward_y = y_ + (color_ == WHITE ? -1 : 1);
+    if (board[forward_y * 8 + x_] != nullptr) {
       return false;
     }
-  }
-
-  if (diffX == 0) {
-    if (!already_move_) {
-      if (diffY == 2 || diffY == 1) {
+  } else if (diffY == 1) {
+    if (diffX == 1) {
+      if (board[y * 8 + x]->getColor() == (color_ == WHITE ? BLACK : WHITE)) {
         return true;
+      } else {
+        return false;
       }
+    } else if (board[y * 8 + x_] != nullptr) {
+      return false;
     }
-
-    if (diffY == 1) {
-      return true;
-    }
+  } else {
+    return false;
   }
 
-  if (diffY == 1 && diffX == 1 && board[y * 8 + x] != 0) {
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
-bool Pawn::move(int x, int y, const array<Piece*, 64>& board) {
-  if (validate_move(x, y, board)) {
-    already_move_ = true;
-    x_ = x;
-    y_ = y;
-    return true;
-  }
-  return false;
+void Pawn::move(int x, int y) {
+  already_move_ = true;
+  x_ = x;
+  y_ = y;
 }
 
 string Pawn::getType() {
