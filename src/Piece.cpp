@@ -2,6 +2,7 @@
 #include <math.h>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -66,6 +67,8 @@ bool checkKnight(int diffX, int diffY) {
 /* -------------------------------------------- */
 Piece::Piece(int x, int y, E_Color color) : x_(x), y_(y), color_(color) {}
 
+Piece::~Piece() {}
+
 string Piece::getType() {
   return nullptr;
 }
@@ -87,6 +90,7 @@ ostream& operator<<(ostream& os, const Piece& p) {
 /*                     King                     */
 /* -------------------------------------------- */
 King::King(int x, int y, E_Color color) : Piece(x, y, color) {}
+King::~King() {}
 
 bool King::validate_move(int x, int y, const array<Piece*, 64>& board) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
@@ -130,6 +134,7 @@ const string King::toString() const {
 /*                     Queen                    */
 /* -------------------------------------------- */
 Queen::Queen(int x, int y, E_Color color) : Piece(x, y, color) {}
+Queen::~Queen() {}
 
 bool Queen::validate_move(int x, int y, const array<Piece*, 64>& board) {
   if (x > 8 || x < 0 || y > 7 || y < 7)
@@ -177,6 +182,7 @@ const string Queen::toString() const {
 /*                     Rook                     */
 /* -------------------------------------------- */
 Rook::Rook(int x, int y, E_Color color) : Piece(x, y, color) {}
+Rook::~Rook() {}
 
 bool Rook::validate_move(int x, int y, const array<Piece*, 64>& board) {
   if (x > 7 || x < 0 || y > 7 || y < 0)
@@ -216,6 +222,7 @@ const string Rook::toString() const {
 /*                    Knight                    */
 /* -------------------------------------------- */
 Knight::Knight(int x, int y, E_Color color) : Piece(x, y, color) {}
+Knight::~Knight() {}
 
 bool Knight::validate_move(int x, int y, const array<Piece*, 64>& board) {
   if (x > 7 || x < 0 || y > 7 || y < 0) {
@@ -254,6 +261,7 @@ const string Knight::toString() const {
 /*                    Bishop                    */
 /* -------------------------------------------- */
 Bishop::Bishop(int x, int y, E_Color color) : Piece(x, y, color) {}
+Bishop::~Bishop() {}
 
 bool Bishop::validate_move(int x, int y, const array<Piece*, 64>& board) {
   if (x > 7 || x < 0 || y > 7 || y < 0) {
@@ -293,6 +301,7 @@ const string Bishop::toString() const {
 /* -------------------------------------------- */
 Pawn::Pawn(int x, int y, E_Color color, bool already_move)
     : Piece(x, y, color), already_move_(already_move) {}
+Pawn::~Pawn() {}
 
 bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
   int diffX = abs(x - x_);
@@ -347,6 +356,38 @@ const string Pawn::toString() const {
   }
 }
 
-void Pawn::forward() {}
+Piece* Pawn::promote() {
+  int rank = color_ == WHITE ? 0 : 7;
+  if (y_ != rank) {
+    return nullptr;
+  }
 
-void Pawn::promote() {}
+  Piece* promoted_piece = nullptr;
+  while (promoted_piece == nullptr) {
+    cout << "Choose a piece to promote the pawn to (Q, R, B, N): ";
+    string line;
+    char piece_char;
+    getline(cin, line);
+    istringstream iss(line);
+    iss >> piece_char;
+    switch (toupper(piece_char)) {
+      case 'Q':
+        promoted_piece = new Queen(x_, y_, color_);
+        break;
+      case 'R':
+        promoted_piece = new Rook(x_, y_, color_);
+        break;
+      case 'B':
+        promoted_piece = new Bishop(x_, y_, color_);
+        break;
+      case 'N':
+        promoted_piece = new Knight(x_, y_, color_);
+        break;
+      default:
+        cout << "Invalid piece choice. Try again." << endl;
+        break;
+    }
+  }
+
+  return promoted_piece;
+}

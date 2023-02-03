@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-  Game game;
+  Game game("2k5/6P1/8/8/8/8/1p6/5K2 w - - 0 1");
   array<int, 4> move;
 
   while (1) {

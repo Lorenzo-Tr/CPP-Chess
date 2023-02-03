@@ -32,6 +32,15 @@ bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
   if (check_move(x1, y1, x2, y2)) {
     board_[y1 * 8 + x1]->move(x2, y2);
     board_[y2 * 8 + x2] = board_[y1 * 8 + x1];
+    if (board_[y1 * 8 + x1]->getType() == "pawn") {
+      Pawn* pawn = dynamic_cast<Pawn*>(board_[y1 * 8 + x1]);
+      // Call promote function
+      Piece* promoted_piece = pawn->promote();
+      // Replace the pawn with the promoted piece
+      board_[y2 * 8 + x2] = promoted_piece;
+      // Delete the pawn
+      delete pawn;
+    }
     board_[y1 * 8 + x1] = nullptr;
     return true;
   } else {

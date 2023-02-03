@@ -11,9 +11,6 @@ Player::Player(ChessBoard& chessboard, string name, E_Color color)
 
 int Player::play_move(int x1, int y1, int x2, int y2) {
   Utils::clear();
-  cout << "x : " << x1 << " y : " << y1 << " -> x : " << x2 << " y : " << y2
-       << endl;
-
   chessboard_.play_move(x1, y1, x2, y2);
 
   return 0;
@@ -27,7 +24,7 @@ array<int, 4> Player::read_move() {
 
   while (read) {
     const string& text = from ? " : Enter the piece you want to move \"x y\": "
-                              : " : Enter where want to move \"x y\": ";
+                              : " : Enter where you want to move \"x y\": ";
     cout << getColor() << text << endl;
     int i = from ? 0 : 2;
 

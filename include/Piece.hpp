@@ -14,11 +14,13 @@ class Piece {
 
  public:
   Piece(int x, int y, E_Color color);
+  virtual ~Piece();
 
   bool operator!=(const string&);
   friend ostream& operator<<(ostream& os, const Piece& p);
 
   inline E_Color getColor() { return color_; }
+  inline int getY() { return y_; }
   virtual string getType();
   virtual const string toString() const;
   // Check if is a valid move
@@ -30,6 +32,7 @@ class Piece {
 class King : public Piece {
  public:
   King(int x, int y, E_Color color);
+  virtual ~King();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
@@ -39,6 +42,7 @@ class King : public Piece {
 class Queen : public Piece {
  public:
   Queen(int x, int y, E_Color color);
+  virtual ~Queen();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
@@ -48,6 +52,7 @@ class Queen : public Piece {
 class Rook : public Piece {
  public:
   Rook(int x, int y, E_Color color);
+  virtual ~Rook();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
@@ -57,6 +62,7 @@ class Rook : public Piece {
 class Knight : public Piece {
  public:
   Knight(int x, int y, E_Color color);
+  virtual ~Knight();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
@@ -66,6 +72,7 @@ class Knight : public Piece {
 class Bishop : public Piece {
  public:
   Bishop(int x, int y, E_Color color);
+  virtual ~Bishop();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
@@ -78,11 +85,11 @@ class Pawn : public Piece {
 
  public:
   Pawn(int x, int y, E_Color color, bool already_move);
+  virtual ~Pawn();
   bool validate_move(int x, int y, const array<Piece*, 64>& board);
   void move(int x, int y);
   string getType();
   string const toString() const;
 
-  void forward();
-  void promote();
+  Piece* promote();
 };
