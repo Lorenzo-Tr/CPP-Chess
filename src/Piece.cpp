@@ -6,48 +6,41 @@
 
 using namespace std;
 
-bool checkDiagonals(int x_,
-                    int y_,
-                    int x,
-                    int y,
+bool checkDiagonals(int x1,
+                    int y1,
+                    int x2,
+                    int y2,
                     const array<Piece*, 64>& board) {
-  int dirX = x_ - x;
-  int dirY = y_ - y;
-  if ((dirX < 0 && dirY < 0) || (dirX > 0 && dirY > 0)) {
-    int max_X = max(x_, x);
-    int max_Y = max(y_, y);
-    for (int i = min(x_, x); i < max_X; i++) {
-      for (int j = min(y_, y); j < max_Y; j++) {
-        if (board[i * 8 + j] != nullptr)
-          return false;
-      }
+  int dx = (x1 < x2) ? 1 : -1;
+  int dy = (y1 < y2) ? 1 : -1;
+  int x = x1 + dx;
+  int y = y1 + dy;
+  while (x != x2 && y != y2) {
+    if (board[y * 8 + x] != 0) {
+      return false;
     }
-  }
-  if ((dirX < 0 && dirY > 0) || (dirX > 0 && dirY < 0)) {
-    int max_X = max(x_, x);
-    int min_Y = min(y_, y);
-    for (int i = min(x_, x); i < max_X; i++) {
-      for (int j = max(y_, y); j > min_Y; j--) {
-        if (board[i * 8 + j] != nullptr)
-          return false;
-      }
-    }
+    x += dx;
+    y += dy;
   }
   return true;
 }
 
-bool checkLine(int x_, int x, int y, const array<Piece*, 64>& board) {
-  for (int i = x_; i <= x; i++) {
-    if (board[y * 8 + i] != 0) {
+bool checkLine(int x1, int y1, int y2, const array<Piece*, 64>& board) {
+  int min_y = min(y1, y2);
+  int max_y = max(y1, y2);
+  for (int y = min_y + 1; y < max_y; y++) {
+    if (board[y * 8 + x1] != 0) {
       return false;
     }
   }
   return true;
 }
 
-bool checkColumn(int y_, int x, int y, const array<Piece*, 64>& board) {
-  for (int j = y_; j <= y; j++) {
-    if (board[j * 8 + x] != 0) {
+bool checkColumn(int x1, int y1, int x2, const array<Piece*, 64>& board) {
+  int min_x = min(x1, x2);
+  int max_x = max(x1, x2);
+  for (int x = min_x + 1; x < max_x; x++) {
+    if (board[y1 * 8 + x] != 0) {
       return false;
     }
   }
@@ -93,21 +86,18 @@ King::King(int x, int y, E_Color color) : Piece(x, y, color) {}
 King::~King() {}
 
 bool King::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0)
-    return false;
-
-  int diffX = abs(x_ - x);
-  int diffY = abs(y_ - y);
-
-  bool diagonals = !checkDiagonals(x_, y_, x, y, board);
-  bool line = !checkLine(x_, x, y, board);
-  bool column = !checkColumn(y_, x, y, board);
-  bool knight = !checkKnight(diffX, diffY);
-
-  if (diffX == 1 || diffY == 1) {
-    if (diagonals && line && column && knight) {
-      return true;
-    }
+  (void)board;
+  // Check if the new position is one square vertically
+  if (abs(x - x_) == 1 && y_ == y) {
+    return true;
+  }
+  // Check if the new position is one square horizontally
+  if (abs(y - y_) == 1 && x_ == x) {
+    return true;
+  }
+  // Check if the new position is one square diagonally
+  if (abs(x - x_) == 1 && abs(y - y_) == 1) {
+    return true;
   }
 
   return false;
@@ -137,24 +127,18 @@ Queen::Queen(int x, int y, E_Color color) : Piece(x, y, color) {}
 Queen::~Queen() {}
 
 bool Queen::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 8 || x < 0 || y > 7 || y < 7)
-    return false;
-
   // check line
-  if (y_ == y && x < 7 && x >= 0) {
-    return checkLine(x_, x, y, board);
+  if (x_ == x) {
+    return checkLine(x_, y_, y, board);
   }
 
   // check column
-  if (x_ == x && y < 7 && y >= 0) {
-    return checkColumn(y_, x, y, board);
+  if (y_ == y) {
+    return checkColumn(x_, y_, x, board);
   }
 
-  int diffX = abs(x_ - x);
-  int diffY = abs(y_ - y);
-
   // check diagonale
-  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY) {
+  if (abs(x - x_) == abs(y - y_)) {
     return checkDiagonals(x_, y_, x, y, board);
   }
 
@@ -185,17 +169,14 @@ Rook::Rook(int x, int y, E_Color color) : Piece(x, y, color) {}
 Rook::~Rook() {}
 
 bool Rook::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0)
-    return false;
-
   // check line
-  if (y_ == y && x < 7 && x >= 0) {
-    return checkLine(x_, x, y, board);
+  if (x_ == x) {
+    return checkLine(x_, y_, y, board);
   }
 
   // check column
-  if (x_ == x && y < 7 && y >= 0) {
-    return checkColumn(y_, x, y, board);
+  if (y_ == y) {
+    return checkColumn(x_, y_, x, board);
   }
 
   return false;
@@ -225,15 +206,9 @@ Knight::Knight(int x, int y, E_Color color) : Piece(x, y, color) {}
 Knight::~Knight() {}
 
 bool Knight::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0) {
-    return false;
-  }
+  auto dest_piece = board[y * 8 + x];
 
-  int diffX = abs(x_ - x);
-  int diffY = abs(y_ - y);
-
-  if ((diffX == 2 && diffY == 1) || (diffX == 1 && diffY == 2)) {
-    auto dest_piece = board[y * 8 + x];
+  if (checkKnight(abs(x_ - x), abs(y_ - y))) {
     return dest_piece == nullptr || dest_piece->getColor() != color_;
   }
 
@@ -264,15 +239,8 @@ Bishop::Bishop(int x, int y, E_Color color) : Piece(x, y, color) {}
 Bishop::~Bishop() {}
 
 bool Bishop::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  if (x > 7 || x < 0 || y > 7 || y < 0) {
-    return false;
-  }
-
-  int diffX = abs(x_ - x);
-  int diffY = abs(y_ - y);
-
   // check diagonale
-  if (diffX >= 0 && diffX < 7 && diffY >= 0 && diffY < 7 && diffX == diffY) {
+  if (abs(x - x_) == abs(y - y_)) {
     return checkDiagonals(x_, y_, x, y, board);
   }
 

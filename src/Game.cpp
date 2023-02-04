@@ -14,9 +14,7 @@ Game::Game(const string& fen) : actual_player_(), historical_() {
   array<bool, 4> castle_rights = chessboard_.getCastle_rights();
   array<int, 2> en_passant = chessboard_.getEnPassant();
 
-  cout << board[5 * 8 + 3] << " - " << board[5 * 8 + 5] << endl;
   Utils::parse_fen(fen, board, actual_player, castle_rights, en_passant);
-  cout << board[5 * 8 + 3] << " - " << board[5 * 8 + 5] << endl;
 
   // chessboard_.setBoard(board);
   change_player(actual_player);

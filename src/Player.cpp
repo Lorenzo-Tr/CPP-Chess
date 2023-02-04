@@ -25,7 +25,7 @@ array<int, 4> Player::read_move() {
   while (read) {
     const string& text = from ? " : Enter the piece you want to move \"x y\": "
                               : " : Enter where you want to move \"x y\": ";
-    cout << getColor() << text << endl;
+    cout << endl << getColor() << text << endl;
     int i = from ? 0 : 2;
 
     getline(cin, move);

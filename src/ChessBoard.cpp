@@ -21,6 +21,18 @@ bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
     return false;
   }
 
+  if (x1 == x2 && y1 == y2) {
+    return false;
+  }
+
+  auto cur_piece = board_[y1 * 8 + x1];
+  auto dest_piece = board_[y2 * 8 + x2];
+
+  if (dest_piece != nullptr &&
+      cur_piece->getColor() == dest_piece->getColor()) {
+    return false;
+  }
+
   if (board_[y1 * 8 + x1]->validate_move(x2, y2, board_)) {
     return true;
   }
@@ -36,10 +48,12 @@ bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
       Pawn* pawn = dynamic_cast<Pawn*>(board_[y1 * 8 + x1]);
       // Call promote function
       Piece* promoted_piece = pawn->promote();
-      // Replace the pawn with the promoted piece
-      board_[y2 * 8 + x2] = promoted_piece;
-      // Delete the pawn
-      delete pawn;
+      if (promoted_piece != nullptr) {
+        // Replace the pawn with the promoted piece
+        board_[y2 * 8 + x2] = promoted_piece;
+        // Delete the pawn
+        delete pawn;
+      }
     }
     board_[y1 * 8 + x1] = nullptr;
     return true;
