@@ -35,6 +35,12 @@ array<int, 4> Player::read_move() {
       cout << "Invalid position, the values should be between 0 and 7." << endl;
       continue;
     }
+    auto selected_piece = chessboard_.getBoard()[y * 8 + x];
+    if (from && selected_piece != nullptr &&
+        selected_piece->getColor() != getColor()) {
+      cout << "It's not your piece, play yours" << endl;
+      continue;
+    }
 
     coordinate[i] = x;
     coordinate[i + 1] = y;

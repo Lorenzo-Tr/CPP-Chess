@@ -11,19 +11,16 @@ Game::Game(const string& fen) : actual_player_(), historical_() {
 
   array<Piece*, 64>& board = chessboard_.getBoard();
   E_Color actual_player;
-  array<bool, 4> castle_rights = chessboard_.getCastle_rights();
-  array<int, 2> en_passant = chessboard_.getEnPassant();
+  array<bool, 4>& castle_rights = chessboard_.getCastle_rights();
+  array<int, 2>& en_passant = chessboard_.getEnPassant();
 
   Utils::parse_fen(fen, board, actual_player, castle_rights, en_passant);
 
-  // chessboard_.setBoard(board);
   change_player(actual_player);
-  chessboard_.setCastleRights(castle_rights);
-  chessboard_.setEnPassant(en_passant);
 }
 
 void Game::change_player(E_Color color) {
-  actual_player_ = players_[color - 1];
+  actual_player_ = players_[color];
 }
 
 bool Game::check_echec(int x, int y) {
@@ -38,7 +35,7 @@ bool Game::check_echec(int x, int y) {
         (board[i * 8 + y]->getType() == "king" && (diffx == 1)))
       return true;
   }
-  // check colomn
+  // check column
   for (int j = y; j < 8; j++) {
     int diffy = abs(j - y);
     if (board[x * 8 + j]->getType() == "queen" ||

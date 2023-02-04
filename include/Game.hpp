@@ -26,5 +26,5 @@ class Game {
   bool check_mat(int x, int y);
   bool check_pat(int x, int y);
   bool check_castle(int x, int y);
-  bool do_roque(int x, int y);
+  bool do_castle(int x, int y);
 };
