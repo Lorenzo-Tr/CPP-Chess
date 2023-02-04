@@ -19,6 +19,10 @@ class Utils {
                         array<bool, 4>& castle_rights,
                         array<int, 2>& en_passant);
   static void clear();
+  static bool isUnderAttack(int x,
+                            int y,
+                            E_Color color,
+                            const array<Piece*, 64>& board);
 
  private:
   static Piece* char_to_piece(int index, char letter);
@@ -33,4 +37,21 @@ class Utils {
       array<bool, 4>& castle_rights);
   static string::const_iterator parse_en_passant(string::const_iterator it,
                                                  array<int, 2>& en_passant);
+
+  static bool isUnderAttackDiagonal(int x,
+                                    int y,
+                                    E_Color color,
+                                    const array<Piece*, 64>& board);
+  static bool isUnderAttackHorizontalOrVertical(int x,
+                                                int y,
+                                                E_Color color,
+                                                const array<Piece*, 64>& board);
+  static bool isUnderAttackByKnight(int x,
+                                    int y,
+                                    E_Color color,
+                                    const array<Piece*, 64>& board);
+  static bool isUnderAttackByPawn(int x,
+                                  int y,
+                                  E_Color color,
+                                  const array<Piece*, 64>& board);
 };

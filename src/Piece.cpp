@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include "Utils.hpp"
 
 using namespace std;
 
@@ -55,143 +56,6 @@ bool checkKnight(int diffX, int diffY) {
   return false;
 }
 
-bool isUnderAttackByPawn(int x,
-                         int y,
-                         E_Color color,
-                         const array<Piece*, 64>& board) {
-  int dx[] = {-1, 1};
-  int dy[] = {-1, 1};
-
-  for (int i = 0; i < 2; i++) {
-    int nx = x + dx[i];
-    int ny = y + dy[i];
-    if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 &&
-        board[ny * 8 + nx] != nullptr &&
-        board[ny * 8 + nx]->getType() == "pawn" &&
-        board[ny * 8 + nx]->getColor() != color) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-bool isUnderAttackByKnight(int x,
-                           int y,
-                           E_Color color,
-                           const array<Piece*, 64>& board) {
-  int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
-  int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
-  for (int i = 0; i < 8; i++) {
-    int nx = x + dx[i];
-    int ny = y + dy[i];
-    if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 &&
-        board[ny * 8 + nx] != nullptr &&
-        board[ny * 8 + nx]->getType() == "knight" &&
-        board[ny * 8 + nx]->getColor() != color) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool isUnderAttackHorizontalOrVertical(int x,
-                                       int y,
-                                       E_Color color,
-                                       const array<Piece*, 64>& board) {
-  // Check horizontal attack
-  for (int i = 0; i < 8; i++) {
-    if (i == y)
-      continue;
-    if (board[x * 8 + i] != nullptr && board[x * 8 + i]->getColor() != color &&
-        (board[x * 8 + i]->getType() == "rook" ||
-         board[x * 8 + i]->getType() == "queen"))
-      return true;
-  }
-
-  // Check vertical attack
-  for (int i = 0; i < 8; i++) {
-    if (i == x)
-      continue;
-    if (board[i * 8 + y] != nullptr && board[i * 8 + y]->getColor() != color &&
-        (board[i * 8 + y]->getType() == "rook" ||
-         board[i * 8 + y]->getType() == "queen"))
-      return true;
-  }
-
-  return false;
-}
-
-bool isUnderAttackDiagonal(int x,
-                           int y,
-                           E_Color color,
-                           const array<Piece*, 64>& board) {
-  // Check left-up diagonal
-  for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
-    Piece* piece = board[i * 8 + j];
-    if (piece &&
-        (piece->getType() == "bishop" || piece->getType() == "queen") &&
-        piece->getColor() != color) {
-      return true;
-    }
-    if (piece) {
-      break;
-    }
-  }
-
-  // Check right-up diagonal
-  for (int i = x - 1, j = y + 1; i >= 0 && j < 8; i--, j++) {
-    Piece* piece = board[i * 8 + j];
-    if (piece &&
-        (piece->getType() == "bishop" || piece->getType() == "queen") &&
-        piece->getColor() != color) {
-      return true;
-    }
-    if (piece) {
-      break;
-    }
-  }
-
-  // Check left-down diagonal
-  for (int i = x + 1, j = y - 1; i < 8 && j >= 0; i++, j--) {
-    Piece* piece = board[i * 8 + j];
-    if (piece &&
-        (piece->getType() == "bishop" || piece->getType() == "queen") &&
-        piece->getColor() == color) {
-      return true;
-    }
-    if (piece) {
-      break;
-    }
-  }
-
-  // Check right-down diagonal
-  for (int i = x + 1, j = y + 1; i < 8 && j < 8; i++, j++) {
-    Piece* piece = board[i * 8 + j];
-    if (piece &&
-        (piece->getType() == "bishop" || piece->getType() == "queen") &&
-        piece->getColor() == color) {
-      return true;
-    }
-    if (piece) {
-      break;
-    }
-  }
-  return false;
-}
-
-bool isUnderAttack(int x,
-                   int y,
-                   E_Color color,
-                   const array<Piece*, 64>& board) {
-  bool pawn = isUnderAttackByPawn(x, y, color, board);
-  bool knight = isUnderAttackByKnight(x, y, color, board);
-  bool diagonals = isUnderAttackDiagonal(x, y, color, board);
-  bool line_col = isUnderAttackHorizontalOrVertical(x, y, color, board);
-
-  return pawn || knight || diagonals || line_col;
-}
-
 /* -------------------------------------------- */
 /*                     Piece                    */
 /* -------------------------------------------- */
@@ -227,15 +91,15 @@ bool King::validate_move(int x, int y, const array<Piece*, 64>& board) {
 
   // Check if the new position is one square vertically
   if (abs(x - x_) == 1 && y_ == y) {
-    return !isUnderAttack(x, y, color_, board);
+    return !Utils::isUnderAttack(x, y, color_, board);
   }
   // Check if the new position is one square horizontally
   if (abs(y - y_) == 1 && x_ == x) {
-    return !isUnderAttack(x, y, color_, board);
+    return !Utils::isUnderAttack(x, y, color_, board);
   }
   // Check if the new position is one square diagonally
   if (abs(x - x_) == 1 && abs(y - y_) == 1) {
-    return !isUnderAttack(x, y, color_, board);
+    return !Utils::isUnderAttack(x, y, color_, board);
   }
 
   return false;
