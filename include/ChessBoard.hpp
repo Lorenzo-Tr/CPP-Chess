@@ -36,6 +36,7 @@ class ChessBoard {
 
   void PrecomputedMoveDate();
   void save_move(Move* move, Piece* captured, Piece* promoted);
+  void cancel_move();
   void print();
   void print_playable_move(int x, int y);
   // Check if the move is valide
@@ -47,4 +48,5 @@ class ChessBoard {
   void generateKnightMoves(int start, Piece* piece);
   void generatePawnMoves(int start, Piece* piece);
   void generateKingMoves(int start, Piece* piece);
+  void generateLegalMoves(E_Color ColourToMove);
 };

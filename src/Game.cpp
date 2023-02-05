@@ -71,55 +71,6 @@ bool Game::check_mat() {
   return false;
 }
 
-void Game::cancel_move() {
-  auto board = chessboard_.getBoard();
-  if (chessboard_.GetHistorical().size() > 0) {
-    Historical* last = chessboard_.GetHistorical().back();
-    Move* lastMove = last->getMove();
-    Piece* capturedPiece = last->getCapturedPiece();
-    board[lastMove->StartSquare] = board[lastMove->TargetSquare];
-    if (capturedPiece) {
-      board[lastMove->TargetSquare] = capturedPiece;
-    } else {
-      board[lastMove->TargetSquare] = nullptr;
-    }
-  }
-  chessboard_.GetHistorical().pop_back();
-}
 
-void Game::generateLegalMoves(E_Color ColourToMove) {
-  auto board_ = chessboard_.getBoard();
-  int kingSquare;
-  for (int i = 0; i < 64; i++) {
-    Piece* piece = board_[i];
-    if (piece && piece->getColor() == ColourToMove) {
-      vector<Move*> pseudoLegalMoves = piece->getPseudoLegalMoves();
-      if (piece->getType() == "king") {
-        kingSquare = i;
-      }
-      for (Move* moveToVerify : pseudoLegalMoves) {
-        int x1 = moveToVerify->StartSquare % 8;
-        int y1 = moveToVerify->StartSquare / 8;
-        int x2 = moveToVerify->TargetSquare % 8;
-        int y2 = moveToVerify->TargetSquare / 8;
-        actual_player_->play_move(x1, y1, x2, y2);
-        change_player();
-        chessboard_.generateMoves(GetActualPlayer()->getColor());
-        for (int j = 0; j < 64; j++) {
-          Piece* opponentPiece = board_[j];
-          if (opponentPiece) {
-            vector<Move*> opponentPseudoLegalMoves =
-                opponentPiece->getPseudoLegalMoves();
-            for (Move* response : opponentPseudoLegalMoves) {
-              if (response->TargetSquare == kingSquare) {
-              } else {
-                chessboard_.getLegalMoves().push_back(moveToVerify);
-              }
-            }
-          }
-        }
-        cancel_move();
-      }
-    }
-  }
-}
+
+
