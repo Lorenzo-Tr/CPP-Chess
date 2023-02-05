@@ -3,15 +3,12 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include "Game.hpp"
 #include "Utils.hpp"
 
 using namespace std;
 
-bool checkDiagonals(int x1,
-                    int y1,
-                    int x2,
-                    int y2,
-                    const array<Piece*, 64>& board) {
+bool checkDiagonals(int x1, int y1, int x2, int y2, board board) {
   int dx = (x1 < x2) ? 1 : -1;
   int dy = (y1 < y2) ? 1 : -1;
   int x = x1 + dx;
@@ -26,7 +23,7 @@ bool checkDiagonals(int x1,
   return true;
 }
 
-bool checkLine(int x1, int y1, int y2, const array<Piece*, 64>& board) {
+bool checkLine(int x1, int y1, int y2, board board) {
   int min_y = min(y1, y2);
   int max_y = max(y1, y2);
   for (int y = min_y + 1; y < max_y; y++) {
@@ -37,7 +34,7 @@ bool checkLine(int x1, int y1, int y2, const array<Piece*, 64>& board) {
   return true;
 }
 
-bool checkColumn(int x1, int y1, int x2, const array<Piece*, 64>& board) {
+bool checkColumn(int x1, int y1, int x2, board board) {
   int min_x = min(x1, x2);
   int max_x = max(x1, x2);
   for (int x = min_x + 1; x < max_x; x++) {
@@ -59,7 +56,11 @@ bool checkKnight(int diffX, int diffY) {
 /* -------------------------------------------- */
 /*                     Piece                    */
 /* -------------------------------------------- */
-Piece::Piece(int x, int y, E_Color color) : x_(x), y_(y), color_(color) {}
+Piece::Piece(int x, int y, E_Color color)
+    : x_(x), y_(y), color_(color), pseudoLegalMoves_() {
+  // Reserve the max pseudoLegalMoves possible to reduce the number of alloc
+  pseudoLegalMoves_.reserve(28);
+}
 
 Piece::~Piece() {}
 
@@ -86,20 +87,20 @@ ostream& operator<<(ostream& os, const Piece& p) {
 King::King(int x, int y, E_Color color) : Piece(x, y, color) {}
 King::~King() {}
 
-bool King::validate_move(int x, int y, const array<Piece*, 64>& board) {
-  // (void)board;
+bool King::validate_move(int x, int y, board board) {
+  (void)board;
 
   // Check if the new position is one square vertically
   if (abs(x - x_) == 1 && y_ == y) {
-    return !Utils::isUnderAttack(x, y, color_, board);
+    // return !Utils::isUnderAttack(x, y, color_, board);
   }
   // Check if the new position is one square horizontally
   if (abs(y - y_) == 1 && x_ == x) {
-    return !Utils::isUnderAttack(x, y, color_, board);
+    // return !Utils::isUnderAttack(x, y, color_, board);
   }
   // Check if the new position is one square diagonally
   if (abs(x - x_) == 1 && abs(y - y_) == 1) {
-    return !Utils::isUnderAttack(x, y, color_, board);
+    // return !Utils::isUnderAttack(x, y, color_, , board);
   }
 
   return false;
@@ -128,7 +129,7 @@ const string King::toString() const {
 Queen::Queen(int x, int y, E_Color color) : Piece(x, y, color) {}
 Queen::~Queen() {}
 
-bool Queen::validate_move(int x, int y, const array<Piece*, 64>& board) {
+bool Queen::validate_move(int x, int y, board board) {
   // check line
   if (x_ == x) {
     return checkLine(x_, y_, y, board);
@@ -170,7 +171,7 @@ const string Queen::toString() const {
 Rook::Rook(int x, int y, E_Color color) : Piece(x, y, color) {}
 Rook::~Rook() {}
 
-bool Rook::validate_move(int x, int y, const array<Piece*, 64>& board) {
+bool Rook::validate_move(int x, int y, board board) {
   // check line
   if (x_ == x) {
     return checkLine(x_, y_, y, board);
@@ -207,7 +208,7 @@ const string Rook::toString() const {
 Knight::Knight(int x, int y, E_Color color) : Piece(x, y, color) {}
 Knight::~Knight() {}
 
-bool Knight::validate_move(int x, int y, const array<Piece*, 64>& board) {
+bool Knight::validate_move(int x, int y, board board) {
   auto dest_piece = board[y * 8 + x];
 
   if (checkKnight(abs(x_ - x), abs(y_ - y))) {
@@ -240,7 +241,7 @@ const string Knight::toString() const {
 Bishop::Bishop(int x, int y, E_Color color) : Piece(x, y, color) {}
 Bishop::~Bishop() {}
 
-bool Bishop::validate_move(int x, int y, const array<Piece*, 64>& board) {
+bool Bishop::validate_move(int x, int y, board board) {
   // check diagonale
   if (abs(x - x_) == abs(y - y_)) {
     return checkDiagonals(x_, y_, x, y, board);
@@ -273,7 +274,7 @@ Pawn::Pawn(int x, int y, E_Color color, bool already_move)
     : Piece(x, y, color), already_move_(already_move) {}
 Pawn::~Pawn() {}
 
-bool Pawn::validate_move(int x, int y, const array<Piece*, 64>& board) {
+bool Pawn::validate_move(int x, int y, board board) {
   int diffX = abs(x - x_);
   int diffY = abs(y - y_);
 

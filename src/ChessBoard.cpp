@@ -1,6 +1,7 @@
 #include "ChessBoard.hpp"
 #include <iostream>
 #include <typeinfo>
+#include "Game.hpp"
 #include "Piece.hpp"
 #include "Utils.hpp"
 #include "cstdlib"
@@ -12,8 +13,45 @@ ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
     board_[i] = nullptr;
   }
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++) {
     castle_rights_[i] = false;
+  }
+
+  // PrecomputedMoveDate();
+}
+
+ChessBoard::~ChessBoard() {
+  for (int i = 0; i < 8; i++) {
+    delete[] NumSquaresToEdge[i];
+  }
+  delete[] NumSquaresToEdge;
+}
+
+void ChessBoard::PrecomputedMoveDate() {
+  NumSquaresToEdge = new int*[8];
+
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      int numNorth = 7 - i;
+      int numSouth = i;
+      int numWest = j;
+      int numEast = 7 - j;
+
+      int squareIndex = i * 8 + j;
+
+      int SquaresToEdge[8] = {
+          numNorth,
+          numSouth,
+          numWest,
+          numEast,
+          min(numNorth, numWest),
+          min(numSouth, numEast),
+          min(numNorth, numEast),
+      };
+
+      NumSquaresToEdge[squareIndex] = SquaresToEdge;
+    }
+  }
 }
 
 bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
@@ -24,6 +62,25 @@ bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
   if (x1 == x2 && y1 == y2) {
     return false;
   }
+
+  // int kingX, kingY;
+  // for (int i = 0; i < 64; i++) {
+  //   int x = i % 8;
+  //   int y = i / 8;
+  //   Piece* piece = board_[y * 8 + x];
+  //   if (piece && piece->getColor() == board_[y1 * 8 + x1]->getColor()) {
+  //     kingX = x;
+  //     kingY = y;
+  //   }
+  // }
+
+  // (void)kingX;
+  // (void)kingY;
+
+  // if (Utils::isUnderAttack(kingX, kingY, board_[y1 * 8 + x1]->getColor(),
+  //                     board_)) {
+  //   return false;
+  // }
 
   auto cur_piece = board_[y1 * 8 + x1];
   auto dest_piece = board_[y2 * 8 + x2];
@@ -111,4 +168,63 @@ void ChessBoard::print_playable_move(int x, int y) {
     cout << j << " ";
   }
   cout << endl;
+}
+
+void ChessBoard::generateSlidingMoves(int start, Piece* piece) {
+  int startDireIndex = piece->getType() == "bishop" ? 4 : 0;
+  int endDirIndex = piece->getType() == "rook" ? 4 : 8;
+
+  for (int dir = startDireIndex; dir < endDirIndex; dir++) {
+    for (int n = 0; n < NumSquaresToEdge[start][dir]; n++) {
+      int targetSquare = start + DirectionOffsets[dir] * (n + 1);
+      Piece* pieceOnTargetSquare = board_[targetSquare];
+
+      // Blocked by friendly piece, so do not continue
+      if (pieceOnTargetSquare->getColor() == piece->getColor()) {
+        break;
+      }
+
+      piece->getLegalMoves().push_back(new Move(start, targetSquare));
+
+      // Need to capture the opponent's piece before going further
+      if (pieceOnTargetSquare->getColor() != piece->getColor()) {
+        break;
+      }
+    }
+  }
+}
+
+void ChessBoard::generateKnightMoves(int start, Piece* piece) {
+  int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+  int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
+
+  for (int i = 0; i < 8; i++) {
+    int nx = (start % 8) + dx[i];
+    int ny = (start / 8) + dy[i];
+    int targetSquare = ny * 8 + nx;
+    if (board_[ny * 8 + nx]->getColor() != piece->getColor()) {
+      continue;
+    }
+    if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+      piece->getLegalMoves().push_back(new Move(start, targetSquare));
+    }
+  }
+}
+
+// void ChessBoard::generatePawnMoves(int start, Piece* piece) {}
+
+// void ChessBoard::generateKingMoves(int start, Piece* piece) {}
+
+void ChessBoard::generateMoves(E_Color ColourToMove) {
+  for (int S_start = 0; S_start < 64; S_start++) {
+    Piece* piece = board_[S_start];
+    if (piece->getColor() == ColourToMove) {
+      if (Utils::IsSlidingPiece(piece)) {
+        generateSlidingMoves(S_start, piece);
+      }
+      if (piece->getType() == "knight") {
+        generateKnightMoves(S_start, piece);
+      }
+    }
+  }
 }

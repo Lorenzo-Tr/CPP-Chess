@@ -5,6 +5,11 @@
 #include "E_Color.hpp"
 #include "Player.hpp"
 
+struct Attacker {
+  int x_;
+  int y_;
+};
+
 using namespace std;
 class Game {
  private:
@@ -14,6 +19,7 @@ class Game {
   list<string> historical_;
 
  public:
+  static Attacker attacker_;
   Game(const string& fen =
            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
   inline ChessBoard& GetChessBoard() { return chessboard_; }
@@ -22,9 +28,9 @@ class Game {
 
   void change_player(E_Color color);
   int cancel_move();
-  bool check_echec(int x, int y);
-  bool check_mat(int x, int y);
-  bool check_pat(int x, int y);
-  bool check_castle(int x, int y);
-  bool do_castle(int x, int y);
+  bool check_echec();
+  bool check_mat();
+  bool check_pat();
+  bool check_castle();
+  void do_castle();
 };

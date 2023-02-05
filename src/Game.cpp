@@ -6,6 +6,7 @@
 using namespace std;
 
 Game::Game(const string& fen) : actual_player_(), historical_() {
+  cout << "Game" << endl;
   players_ = {new Player(chessboard_, "white", E_Color::WHITE),
               new Player(chessboard_, "black", E_Color::BLACK)};
 
@@ -23,95 +24,49 @@ void Game::change_player(E_Color color) {
   actual_player_ = players_[color];
 }
 
-bool Game::check_echec(int x, int y) {
-  E_Color player = actual_player_->getColor();
+bool Game::check_echec() {
+  int kingX, kingY;
+  E_Color kingColor = actual_player_->getColor();
   array<Piece*, 64>& board = chessboard_.getBoard();
-  // check ligne
-  for (int i = 0; i < 8; i++) {
-    int diffx = abs(i - x);
 
-    if (board[i * 8 + y]->getType() == "queen" ||
-        board[i * 8 + y]->getType() == "rook" ||
-        (board[i * 8 + y]->getType() == "king" && (diffx == 1)))
-      return true;
-  }
-  // check column
-  for (int j = y; j < 8; j++) {
-    int diffy = abs(j - y);
-    if (board[x * 8 + j]->getType() == "queen" ||
-        board[x * 8 + j]->getType() == "rook" ||
-        (board[x * 8 + j]->getType() == "king" && (diffy == 1))) {
-      return true;
+  for (int i = 0; i < 64; i++) {
+    int x = i % 8;
+    int y = i / 8;
+    Piece* piece = board[y * 8 + x];
+    if (piece && piece->getColor() == kingColor) {
+      kingX = x;
+      kingY = y;
     }
   }
-  // check diagonale
-  for (int i = x; i < 8; i++) {
-    for (int j = y; j >= 0; j--) {
-      int diffx = abs(i - x);
-      int diffy = abs(j - y);
-      if (board[i * 8 + j]->getType() == "queen" ||
-          board[i * 8 + j]->getType() == "bishop" ||
-          (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1)) ||
-          (player == board[i * 8 + j]->getColor() &&
-           board[i * 8 + j]->getType() == "pawn"))
-        if (x > 7 || x < 0 || y > 7 || y < 0) {
-          return true;
-        }
-    }
-  }
-  for (int i = x; i < 8; i++) {
-    for (int j = y; j < 8; j++) {
-      int diffx = abs(i - x);
-      int diffy = abs(j - y);
-      if (x > 7 || x < 0 || y > 7 || y < 0) {
-        if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop" ||
-            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1))) {
-          return true;
-        }
-      }
-    }
-  }
-  for (int i = x; i >= 0; i--) {
-    for (int j = y; j < 8; j++) {
-      int diffx = abs(i - x);
-      int diffy = abs(j - y);
-      if (x > 7 || x < 0 || y > 7 || y < 0) {
-        if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop" ||
-            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1))) {
-          return true;
-        }
-      }
-    }
-  }
-  for (int i = x; i >= 0; i--) {
-    for (int j = y; j >= 0; j--) {
-      int diffx = abs(i - x);
-      int diffy = abs(j - y);
-      if (x > 7 || x < 0 || y > 7 || y < 0) {
-        if (board[i * 8 + j]->getType() == "queen" ||
-            board[i * 8 + j]->getType() == "bishop" ||
-            (board[i * 8 + j]->getType() == "king" && (diffx && diffy == 1)) ||
-            (player == board[i * 8 + j]->getColor() &&
-             board[i * 8 + j]->getType() == "pawn")) {
-          return true;
-        }
-      }
-    }
-  }
-  // check Knight
 
-  bool knightright = board[(x + 2) * 8 + (y + 1)]->getType() == "knight" ||
-                     board[(x + 2) * 8 + (y - 1)]->getType() == "knight";
-  bool knightleft = board[(x - 2) * 8 + (y + 1)]->getType() == "knight" ||
-                    board[(x - 2) * 8 + (y - 1)]->getType() == "knight";
-  bool knightbot = board[(x + 1) * 8 + (y + 2)]->getType() == "knight" ||
-                   board[(x - 1) * 8 + (y + 2)]->getType() == "knight";
-  bool knighttop = board[(x + 1) * 8 + (y - 2)]->getType() == "knight" ||
-                   board[(x - 1) * 8 + (y - 2)]->getType() == "knight";
-  if (knightright || knightleft || knightbot || knighttop)
+  (void)kingX;
+  (void)kingY;
+
+  // return Utils::isUnderAttack(kingX, kingY, kingColor, , board);
+  return false;
+}
+
+bool Game::check_mat() {
+  int kingX, kingY;
+  E_Color kingColor = actual_player_->getColor();
+  array<Piece*, 64>& board = chessboard_.getBoard();
+
+  for (int i = 0; i < 64; i++) {
+    int x = i % 8;
+    int y = i / 8;
+    Piece* piece = board[y * 8 + x];
+    if (piece && piece->getColor() == kingColor) {
+      kingX = x;
+      kingY = y;
+    }
+  }
+
+  (void)kingX;
+  (void)kingY;
+
+  if (check_echec()) {
     return true;
+  }
 
   return false;
 }

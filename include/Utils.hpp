@@ -6,6 +6,7 @@
 
 using namespace std;
 
+typedef const array<Piece*, 64>& board;
 class Utils {
  public:
   Utils() = delete;
@@ -19,10 +20,18 @@ class Utils {
                         array<bool, 4>& castle_rights,
                         array<int, 2>& en_passant);
   static void clear();
+  static bool IsSlidingPiece(Piece* piece);
   static bool isUnderAttack(int x,
                             int y,
                             E_Color color,
-                            const array<Piece*, 64>& board);
+                            int& attackerX_,
+                            int& attackerY_,
+                            board board);
+  static bool isKingSave(board board,
+                         int kingX,
+                         int kingY,
+                         int attackerX_,
+                         int attackerY_);
 
  private:
   static Piece* char_to_piece(int index, char letter);
@@ -41,17 +50,25 @@ class Utils {
   static bool isUnderAttackDiagonal(int x,
                                     int y,
                                     E_Color color,
-                                    const array<Piece*, 64>& board);
+                                    int& attackerX_,
+                                    int& attackerY_,
+                                    board board);
   static bool isUnderAttackHorizontalOrVertical(int x,
                                                 int y,
                                                 E_Color color,
-                                                const array<Piece*, 64>& board);
+                                                int& attackerX_,
+                                                int& attackerY_,
+                                                board board);
   static bool isUnderAttackByKnight(int x,
                                     int y,
                                     E_Color color,
-                                    const array<Piece*, 64>& board);
+                                    int& attackerX_,
+                                    int& attackerY_,
+                                    board board);
   static bool isUnderAttackByPawn(int x,
                                   int y,
                                   E_Color color,
-                                  const array<Piece*, 64>& board);
+                                  int& attackerX_,
+                                  int& attackerY_,
+                                  board board);
 };

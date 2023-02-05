@@ -148,7 +148,9 @@ void Utils::clear() {
 bool Utils::isUnderAttackByPawn(int x,
                                 int y,
                                 E_Color color,
-                                const array<Piece*, 64>& board) {
+                                int& attackerX_,
+                                int& attackerY_,
+                                board board) {
   int dx[] = {-1, 1};
   int dy[] = {-1, 1};
 
@@ -159,6 +161,8 @@ bool Utils::isUnderAttackByPawn(int x,
         board[ny * 8 + nx] != nullptr &&
         board[ny * 8 + nx]->getType() == "pawn" &&
         board[ny * 8 + nx]->getColor() != color) {
+      attackerX_ = nx;
+      attackerY_ = ny;
       return true;
     }
   }
@@ -169,7 +173,9 @@ bool Utils::isUnderAttackByPawn(int x,
 bool Utils::isUnderAttackByKnight(int x,
                                   int y,
                                   E_Color color,
-                                  const array<Piece*, 64>& board) {
+                                  int& attackerX_,
+                                  int& attackerY_,
+                                  board board) {
   int dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};
   int dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};
   for (int i = 0; i < 8; i++) {
@@ -179,6 +185,8 @@ bool Utils::isUnderAttackByKnight(int x,
         board[ny * 8 + nx] != nullptr &&
         board[ny * 8 + nx]->getType() == "knight" &&
         board[ny * 8 + nx]->getColor() != color) {
+      attackerX_ = nx;
+      attackerY_ = ny;
       return true;
     }
   }
@@ -188,15 +196,20 @@ bool Utils::isUnderAttackByKnight(int x,
 bool Utils::isUnderAttackHorizontalOrVertical(int x,
                                               int y,
                                               E_Color color,
-                                              const array<Piece*, 64>& board) {
+                                              int& attackerX_,
+                                              int& attackerY_,
+                                              board board) {
   // Check horizontal attack
   for (int i = 0; i < 8; i++) {
     if (i == y)
       continue;
     if (board[x * 8 + i] != nullptr && board[x * 8 + i]->getColor() != color &&
         (board[x * 8 + i]->getType() == "rook" ||
-         board[x * 8 + i]->getType() == "queen"))
+         board[x * 8 + i]->getType() == "queen")) {
+      attackerX_ = x;
+      attackerY_ = i;
       return true;
+    }
   }
 
   // Check vertical attack
@@ -205,8 +218,11 @@ bool Utils::isUnderAttackHorizontalOrVertical(int x,
       continue;
     if (board[i * 8 + y] != nullptr && board[i * 8 + y]->getColor() != color &&
         (board[i * 8 + y]->getType() == "rook" ||
-         board[i * 8 + y]->getType() == "queen"))
+         board[i * 8 + y]->getType() == "queen")) {
+      attackerX_ = i;
+      attackerY_ = y;
       return true;
+    }
   }
 
   return false;
@@ -215,13 +231,17 @@ bool Utils::isUnderAttackHorizontalOrVertical(int x,
 bool Utils::isUnderAttackDiagonal(int x,
                                   int y,
                                   E_Color color,
-                                  const array<Piece*, 64>& board) {
+                                  int& attackerX_,
+                                  int& attackerY_,
+                                  board board) {
   // Check left-up diagonal
   for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
     Piece* piece = board[i * 8 + j];
     if (piece &&
         (piece->getType() == "bishop" || piece->getType() == "queen") &&
         piece->getColor() != color) {
+      attackerX_ = j;
+      attackerY_ = i;
       return true;
     }
     if (piece) {
@@ -235,6 +255,8 @@ bool Utils::isUnderAttackDiagonal(int x,
     if (piece &&
         (piece->getType() == "bishop" || piece->getType() == "queen") &&
         piece->getColor() != color) {
+      attackerX_ = j;
+      attackerY_ = i;
       return true;
     }
     if (piece) {
@@ -248,6 +270,8 @@ bool Utils::isUnderAttackDiagonal(int x,
     if (piece &&
         (piece->getType() == "bishop" || piece->getType() == "queen") &&
         piece->getColor() == color) {
+      attackerX_ = j;
+      attackerY_ = i;
       return true;
     }
     if (piece) {
@@ -261,6 +285,8 @@ bool Utils::isUnderAttackDiagonal(int x,
     if (piece &&
         (piece->getType() == "bishop" || piece->getType() == "queen") &&
         piece->getColor() == color) {
+      attackerX_ = j;
+      attackerY_ = i;
       return true;
     }
     if (piece) {
@@ -273,11 +299,81 @@ bool Utils::isUnderAttackDiagonal(int x,
 bool Utils::isUnderAttack(int x,
                           int y,
                           E_Color color,
-                          const array<Piece*, 64>& board) {
-  bool pawn = isUnderAttackByPawn(x, y, color, board);
-  bool knight = isUnderAttackByKnight(x, y, color, board);
-  bool diagonals = isUnderAttackDiagonal(x, y, color, board);
-  bool line_col = isUnderAttackHorizontalOrVertical(x, y, color, board);
+                          int& aX_,
+                          int& aY_,
+                          board board) {
+  bool pawn = isUnderAttackByPawn(x, y, color, aX_, aY_, board);
+  bool knight = isUnderAttackByKnight(x, y, color, aX_, aY_, board);
+  bool diagonals = isUnderAttackDiagonal(x, y, color, aX_, aY_, board);
+  bool line_col =
+      isUnderAttackHorizontalOrVertical(x, y, color, aX_, aY_, board);
 
   return pawn || knight || diagonals || line_col;
+}
+
+bool Utils::isKingSave(board board,
+                       int kingX,
+                       int kingY,
+                       int attackerX_,
+                       int attackerY_) {
+  E_Color kingColor = board[kingX * 8 + kingY]->getColor();
+
+  // Check if another piece can capture the attacker
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      Piece* piece = board[i * 8 + j];
+      if (piece && piece->getColor() == kingColor &&
+          piece->validate_move(attackerX_, attackerY_, board)) {
+        return true;
+      }
+    }
+  }
+
+  // Check if a piece can block the attack
+  if (attackerX_ == kingX) {
+    // Attack is along the same row, check if a piece can block
+    int start = min(attackerY_, kingY) + 1;
+    int end = max(attackerY_, kingY) - 1;
+    for (int i = start; i <= end; i++) {
+      Piece* piece = board[kingX * 8 + i];
+      if (piece) {
+        return true;
+      }
+    }
+  } else if (attackerY_ == kingY) {
+    // Attack is along the same column, check if a piece can block
+    int start = min(attackerX_, kingX) + 1;
+    int end = max(attackerX_, kingX) - 1;
+    for (int i = start; i <= end; i++) {
+      Piece* piece = board[i * 8 + kingY];
+      if (piece) {
+        return true;
+      }
+    }
+  } else if (abs(attackerX_ - kingX) == abs(attackerY_ - kingY)) {
+    // Attack is along a diagonal, check if a piece can block
+    int xStep = (attackerX_ > kingX) ? 1 : -1;
+    int yStep = (attackerY_ > kingY) ? 1 : -1;
+    int x = kingX + xStep;
+    int y = kingY + yStep;
+    while (x != attackerX_ && y != attackerY_) {
+      Piece* piece = board[x * 8 + y];
+      if (piece) {
+        return true;
+      }
+      x += xStep;
+      y += yStep;
+    }
+  }
+  return false;
+}
+
+bool Utils::IsSlidingPiece(Piece* piece) {
+  if (piece) {
+    if (piece->getType() == "bishop" || piece->getType() == "rook" ||
+        piece->getType() == "queen") {
+      return true;
+    }
+  }
+  return false;
 }
