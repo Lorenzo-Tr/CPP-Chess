@@ -65,7 +65,7 @@ Piece::Piece(int x, int y, E_Color color)
 Piece::~Piece() {}
 
 string Piece::getType() {
-  return nullptr;
+  return "";
 }
 
 const string Piece::toString() const {
@@ -87,20 +87,13 @@ ostream& operator<<(ostream& os, const Piece& p) {
 King::King(int x, int y, E_Color color) : Piece(x, y, color) {}
 King::~King() {}
 
-bool King::validate_move(int x, int y, board board) {
-  (void)board;
+bool King::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
 
-  // Check if the new position is one square vertically
-  if (abs(x - x_) == 1 && y_ == y) {
-    // return !Utils::isUnderAttack(x, y, color_, board);
-  }
-  // Check if the new position is one square horizontally
-  if (abs(y - y_) == 1 && x_ == x) {
-    // return !Utils::isUnderAttack(x, y, color_, board);
-  }
-  // Check if the new position is one square diagonally
-  if (abs(x - x_) == 1 && abs(y - y_) == 1) {
-    // return !Utils::isUnderAttack(x, y, color_, , board);
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
+    }
   }
 
   return false;
@@ -129,20 +122,13 @@ const string King::toString() const {
 Queen::Queen(int x, int y, E_Color color) : Piece(x, y, color) {}
 Queen::~Queen() {}
 
-bool Queen::validate_move(int x, int y, board board) {
-  // check line
-  if (x_ == x) {
-    return checkLine(x_, y_, y, board);
-  }
+bool Queen::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
 
-  // check column
-  if (y_ == y) {
-    return checkColumn(x_, y_, x, board);
-  }
-
-  // check diagonale
-  if (abs(x - x_) == abs(y - y_)) {
-    return checkDiagonals(x_, y_, x, y, board);
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
+    }
   }
 
   return false;
@@ -171,15 +157,13 @@ const string Queen::toString() const {
 Rook::Rook(int x, int y, E_Color color) : Piece(x, y, color) {}
 Rook::~Rook() {}
 
-bool Rook::validate_move(int x, int y, board board) {
-  // check line
-  if (x_ == x) {
-    return checkLine(x_, y_, y, board);
-  }
+bool Rook::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
 
-  // check column
-  if (y_ == y) {
-    return checkColumn(x_, y_, x, board);
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
+    }
   }
 
   return false;
@@ -208,11 +192,13 @@ const string Rook::toString() const {
 Knight::Knight(int x, int y, E_Color color) : Piece(x, y, color) {}
 Knight::~Knight() {}
 
-bool Knight::validate_move(int x, int y, board board) {
-  auto dest_piece = board[y * 8 + x];
+bool Knight::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
 
-  if (checkKnight(abs(x_ - x), abs(y_ - y))) {
-    return dest_piece == nullptr || dest_piece->getColor() != color_;
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
+    }
   }
 
   return false;
@@ -241,10 +227,13 @@ const string Knight::toString() const {
 Bishop::Bishop(int x, int y, E_Color color) : Piece(x, y, color) {}
 Bishop::~Bishop() {}
 
-bool Bishop::validate_move(int x, int y, board board) {
-  // check diagonale
-  if (abs(x - x_) == abs(y - y_)) {
-    return checkDiagonals(x_, y_, x, y, board);
+bool Bishop::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
+
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
+    }
   }
 
   return false;
@@ -274,39 +263,16 @@ Pawn::Pawn(int x, int y, E_Color color, bool already_move)
     : Piece(x, y, color), already_move_(already_move) {}
 Pawn::~Pawn() {}
 
-bool Pawn::validate_move(int x, int y, board board) {
-  int diffX = abs(x - x_);
-  int diffY = abs(y - y_);
+bool Pawn::isPseudoLegalMove(int x, int y) {
+  int TargetIndex = y * 8 + x;
 
-  if (diffX > 1 || (diffX == 1 && board[y * 8 + x] == nullptr)) {
-    return false;
-  }
-
-  bool is_forward = color_ == WHITE ? y < y_ : y > y_;
-  if (!is_forward) {
-    return false;
-  }
-
-  if (diffY == 2 && !already_move_) {
-    int forward_y = y_ + (color_ == WHITE ? -1 : 1);
-    if (board[forward_y * 8 + x_] != nullptr) {
-      return false;
+  for (auto it : pseudoLegalMoves_) {
+    if (TargetIndex == it->TargetSquare) {
+      return true;
     }
-  } else if (diffY == 1) {
-    if (diffX == 1) {
-      if (board[y * 8 + x]->getColor() == (color_ == WHITE ? BLACK : WHITE)) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (board[y * 8 + x_] != nullptr) {
-      return false;
-    }
-  } else {
-    return false;
   }
 
-  return true;
+  return false;
 }
 
 void Pawn::move(int x, int y) {

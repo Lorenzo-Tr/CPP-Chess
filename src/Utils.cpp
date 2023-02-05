@@ -311,62 +311,62 @@ bool Utils::isUnderAttack(int x,
   return pawn || knight || diagonals || line_col;
 }
 
-bool Utils::isKingSave(board board,
-                       int kingX,
-                       int kingY,
-                       int attackerX_,
-                       int attackerY_) {
-  E_Color kingColor = board[kingX * 8 + kingY]->getColor();
+// bool Utils::isKingSave(board board,
+//                        int kingX,
+//                        int kingY,
+//                        int attackerX_,
+//                        int attackerY_) {
+//   E_Color kingColor = board[kingX * 8 + kingY]->getColor();
 
-  // Check if another piece can capture the attacker
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      Piece* piece = board[i * 8 + j];
-      if (piece && piece->getColor() == kingColor &&
-          piece->validate_move(attackerX_, attackerY_, board)) {
-        return true;
-      }
-    }
-  }
+//   // Check if another piece can capture the attacker
+//   for (int i = 0; i < 8; i++) {
+//     for (int j = 0; j < 8; j++) {
+//       Piece* piece = board[i * 8 + j];
+//       if (piece && piece->getColor() == kingColor &&
+//           piece->validate_move(attackerX_, attackerY_, board)) {
+//         return true;
+//       }
+//     }
+//   }
 
-  // Check if a piece can block the attack
-  if (attackerX_ == kingX) {
-    // Attack is along the same row, check if a piece can block
-    int start = min(attackerY_, kingY) + 1;
-    int end = max(attackerY_, kingY) - 1;
-    for (int i = start; i <= end; i++) {
-      Piece* piece = board[kingX * 8 + i];
-      if (piece) {
-        return true;
-      }
-    }
-  } else if (attackerY_ == kingY) {
-    // Attack is along the same column, check if a piece can block
-    int start = min(attackerX_, kingX) + 1;
-    int end = max(attackerX_, kingX) - 1;
-    for (int i = start; i <= end; i++) {
-      Piece* piece = board[i * 8 + kingY];
-      if (piece) {
-        return true;
-      }
-    }
-  } else if (abs(attackerX_ - kingX) == abs(attackerY_ - kingY)) {
-    // Attack is along a diagonal, check if a piece can block
-    int xStep = (attackerX_ > kingX) ? 1 : -1;
-    int yStep = (attackerY_ > kingY) ? 1 : -1;
-    int x = kingX + xStep;
-    int y = kingY + yStep;
-    while (x != attackerX_ && y != attackerY_) {
-      Piece* piece = board[x * 8 + y];
-      if (piece) {
-        return true;
-      }
-      x += xStep;
-      y += yStep;
-    }
-  }
-  return false;
-}
+//   // Check if a piece can block the attack
+//   if (attackerX_ == kingX) {
+//     // Attack is along the same row, check if a piece can block
+//     int start = min(attackerY_, kingY) + 1;
+//     int end = max(attackerY_, kingY) - 1;
+//     for (int i = start; i <= end; i++) {
+//       Piece* piece = board[kingX * 8 + i];
+//       if (piece) {
+//         return true;
+//       }
+//     }
+//   } else if (attackerY_ == kingY) {
+//     // Attack is along the same column, check if a piece can block
+//     int start = min(attackerX_, kingX) + 1;
+//     int end = max(attackerX_, kingX) - 1;
+//     for (int i = start; i <= end; i++) {
+//       Piece* piece = board[i * 8 + kingY];
+//       if (piece) {
+//         return true;
+//       }
+//     }
+//   } else if (abs(attackerX_ - kingX) == abs(attackerY_ - kingY)) {
+//     // Attack is along a diagonal, check if a piece can block
+//     int xStep = (attackerX_ > kingX) ? 1 : -1;
+//     int yStep = (attackerY_ > kingY) ? 1 : -1;
+//     int x = kingX + xStep;
+//     int y = kingY + yStep;
+//     while (x != attackerX_ && y != attackerY_) {
+//       Piece* piece = board[x * 8 + y];
+//       if (piece) {
+//         return true;
+//       }
+//       x += xStep;
+//       y += yStep;
+//     }
+//   }
+//   return false;
+// }
 
 bool Utils::IsSlidingPiece(Piece* piece) {
   if (piece) {

@@ -28,13 +28,18 @@ class Piece {
   bool operator!=(const string&);
   friend ostream& operator<<(ostream& os, const Piece& p);
 
-  inline E_Color getColor() { return color_; }
+  inline E_Color getColor() {
+    if (getType() == "") {
+      return E_Color::NONE;
+    }
+    return color_;
+  }
   inline int getY() { return y_; }
-  inline vector<Move*>& getLegalMoves() { return pseudoLegalMoves_; }
+  inline vector<Move*>& getPseudoLegalMoves() { return pseudoLegalMoves_; }
   virtual string getType();
   virtual const string toString() const;
   // Check if is a valid move
-  virtual bool validate_move(int x, int y, board board) = 0;
+  virtual bool isPseudoLegalMove(int x, int y) = 0;
   // Move Piece if is a valid move
   virtual void move(int x, int y) = 0;
 };
@@ -43,7 +48,7 @@ class King : public Piece {
  public:
   King(int x, int y, E_Color color);
   virtual ~King();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
   vector<Move> generateMoves();
   string getType();
@@ -54,7 +59,7 @@ class Queen : public Piece {
  public:
   Queen(int x, int y, E_Color color);
   virtual ~Queen();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
   vector<Move> generateMoves();
   string getType();
@@ -65,7 +70,7 @@ class Rook : public Piece {
  public:
   Rook(int x, int y, E_Color color);
   virtual ~Rook();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
   vector<Move> generateMoves();
   string getType();
@@ -76,7 +81,7 @@ class Knight : public Piece {
  public:
   Knight(int x, int y, E_Color color);
   virtual ~Knight();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
   vector<Move> generateMoves();
   string getType();
@@ -87,7 +92,7 @@ class Bishop : public Piece {
  public:
   Bishop(int x, int y, E_Color color);
   virtual ~Bishop();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
   vector<Move> generateMoves();
   string getType();
@@ -101,8 +106,9 @@ class Pawn : public Piece {
  public:
   Pawn(int x, int y, E_Color color, bool already_move);
   virtual ~Pawn();
-  bool validate_move(int x, int y, board board);
+  bool isPseudoLegalMove(int x, int y);
   void move(int x, int y);
+  inline bool isAlreadyMove() { return already_move_; }
   vector<Move> generateMoves();
   string getType();
   string const toString() const;

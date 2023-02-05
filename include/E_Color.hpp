@@ -1,2 +1,2 @@
 #pragma once
-enum E_Color { WHITE, BLACK };
+enum E_Color { WHITE, BLACK, NONE };

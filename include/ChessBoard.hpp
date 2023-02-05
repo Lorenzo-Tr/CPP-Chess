@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include "Historical.hpp"
 #include "Piece.hpp"
 
 using namespace std;
@@ -10,8 +11,10 @@ class ChessBoard {
   array<Piece*, 64> board_;       // int[64]
   array<bool, 4> castle_rights_;  // bool[4]
   array<int, 2> en_passant_;      // int[2]
+  vector<Move*> legalMoves;
   const int DirectionOffsets[8] = {8, -8, -1, 1, 7, -7, 9, -9};
   int** NumSquaresToEdge;
+  vector<Historical*> historical_;
 
  public:
   ChessBoard();
@@ -20,6 +23,8 @@ class ChessBoard {
   inline array<Piece*, 64>& getBoard() { return board_; }
   inline array<bool, 4>& getCastle_rights() { return castle_rights_; }
   inline array<int, 2>& getEnPassant() { return en_passant_; }
+  inline vector<Move*>& getLegalMoves() { return legalMoves; }
+  inline vector<Historical*>& GetHistorical() { return historical_; }
 
   inline void setBoard(array<Piece*, 64> board) { board_ = board; }
   inline void setCastleRights(array<bool, 4> castle_rights) {
@@ -30,6 +35,7 @@ class ChessBoard {
   }
 
   void PrecomputedMoveDate();
+  void save_move(Move* move, Piece* captured, Piece* promoted);
   void print();
   void print_playable_move(int x, int y);
   // Check if the move is valide
