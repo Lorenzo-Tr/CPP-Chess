@@ -8,7 +8,10 @@
 
 using namespace std;
 
-ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
+ChessBoard::ChessBoard()
+    : board_(), castle_rights_(), en_passant_(), NumSquaresToEdge(nullptr) {
+  NumSquaresToEdge = new int*[64];
+
   for (size_t i = 0; i < 64; i++) {
     board_[i] = nullptr;
   }
@@ -17,7 +20,7 @@ ChessBoard::ChessBoard() : board_(), castle_rights_(), en_passant_() {
     castle_rights_[i] = false;
   }
 
-  // PrecomputedMoveDate();
+  PrecomputedMoveDate();
 }
 
 ChessBoard::~ChessBoard() {
@@ -28,8 +31,6 @@ ChessBoard::~ChessBoard() {
 }
 
 void ChessBoard::PrecomputedMoveDate() {
-  NumSquaresToEdge = new int*[8];
-
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       int numNorth = 7 - i;
@@ -39,7 +40,7 @@ void ChessBoard::PrecomputedMoveDate() {
 
       int squareIndex = i * 8 + j;
 
-      int SquaresToEdge[8] = {
+      NumSquaresToEdge[squareIndex] = new int[8]{
           numNorth,
           numSouth,
           numWest,
@@ -48,8 +49,6 @@ void ChessBoard::PrecomputedMoveDate() {
           min(numSouth, numEast),
           min(numNorth, numEast),
       };
-
-      NumSquaresToEdge[squareIndex] = SquaresToEdge;
     }
   }
 }
@@ -178,17 +177,19 @@ void ChessBoard::generateSlidingMoves(int start, Piece* piece) {
     for (int n = 0; n < NumSquaresToEdge[start][dir]; n++) {
       int targetSquare = start + DirectionOffsets[dir] * (n + 1);
       Piece* pieceOnTargetSquare = board_[targetSquare];
+      // If pieceOnTarget is not null
+      if (pieceOnTargetSquare) {
+        // Blocked by friendly piece, so do not continue
+        if (pieceOnTargetSquare->getColor() == piece->getColor()) {
+          break;
+        }
 
-      // Blocked by friendly piece, so do not continue
-      if (pieceOnTargetSquare->getColor() == piece->getColor()) {
-        break;
-      }
+        piece->getLegalMoves().push_back(new Move(start, targetSquare));
 
-      piece->getLegalMoves().push_back(new Move(start, targetSquare));
-
-      // Need to capture the opponent's piece before going further
-      if (pieceOnTargetSquare->getColor() != piece->getColor()) {
-        break;
+        // Need to capture the opponent's piece before going further
+        if (pieceOnTargetSquare->getColor() != piece->getColor()) {
+          break;
+        }
       }
     }
   }
@@ -202,11 +203,13 @@ void ChessBoard::generateKnightMoves(int start, Piece* piece) {
     int nx = (start % 8) + dx[i];
     int ny = (start / 8) + dy[i];
     int targetSquare = ny * 8 + nx;
-    if (board_[ny * 8 + nx]->getColor() != piece->getColor()) {
-      continue;
-    }
-    if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
-      piece->getLegalMoves().push_back(new Move(start, targetSquare));
+    if (board_[targetSquare]) {
+      if (board_[targetSquare]->getColor() != piece->getColor()) {
+        continue;
+      }
+      if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+        piece->getLegalMoves().push_back(new Move(start, targetSquare));
+      }
     }
   }
 }
@@ -218,12 +221,14 @@ void ChessBoard::generateKnightMoves(int start, Piece* piece) {
 void ChessBoard::generateMoves(E_Color ColourToMove) {
   for (int S_start = 0; S_start < 64; S_start++) {
     Piece* piece = board_[S_start];
-    if (piece->getColor() == ColourToMove) {
-      if (Utils::IsSlidingPiece(piece)) {
-        generateSlidingMoves(S_start, piece);
-      }
-      if (piece->getType() == "knight") {
-        generateKnightMoves(S_start, piece);
+    if (piece) {
+      if (piece->getColor() == ColourToMove) {
+        if (Utils::IsSlidingPiece(piece)) {
+          generateSlidingMoves(S_start, piece);
+        }
+        if (piece->getType() == "knight") {
+          generateKnightMoves(S_start, piece);
+        }
       }
     }
   }

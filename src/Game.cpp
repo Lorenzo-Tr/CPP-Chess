@@ -5,8 +5,7 @@
 
 using namespace std;
 
-Game::Game(const string& fen) : actual_player_(), historical_() {
-  cout << "Game" << endl;
+Game::Game(const string& fen) : chessboard_(), actual_player_(), historical_() {
   players_ = {new Player(chessboard_, "white", E_Color::WHITE),
               new Player(chessboard_, "black", E_Color::BLACK)};
 
