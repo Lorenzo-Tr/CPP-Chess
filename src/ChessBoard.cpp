@@ -57,9 +57,9 @@ void ChessBoard::PrecomputedMoveDate() {
   }
 }
 
-void ChessBoard::save_move(Move* m, Piece* c, Piece* p) {
-  historical_.push_back(new Historical(m, c, p));
-}
+// void ChessBoard::save_move(Move* m, Piece* c, Piece* p) {
+//   historical_.push_back(new Historical(m, c, p));
+// }
 
 bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
   if (x2 > 7 || x2 < 0 || y2 > 7 || y2 < 0) {
@@ -70,24 +70,29 @@ bool ChessBoard::check_move(int x1, int y1, int x2, int y2) {
     return false;
   }
 
-  int TargetIndex = y2 * 8 + x2;
-
-  for (auto it : legalMoves) {
-    if (TargetIndex == it->TargetSquare) {
-      return true;
-    }
+  if (board_[y1 * 8 + x1]->isPseudoLegalMove(x2, y2)) {
+    return true;
   }
+
+  // int TargetIndex = y2 * 8 + x2;
+
+  // for (auto it : legalMoves) {
+  //   cout << it->StartSquare << endl;
+  //   if (TargetIndex == it->TargetSquare) {
+  //     return true;
+  //   }
+  // }
 
   return false;
 }
 
 bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
-  Piece* captured = nullptr;
-  Piece* promoted = nullptr;
+  // Piece* captured = nullptr;
+  // Piece* promoted = nullptr;
 
   if (check_move(x1, y1, x2, y2)) {
     board_[y1 * 8 + x1]->move(x2, y2);
-    captured = board_[y2 * 8 + x2];
+    // captured = board_[y2 * 8 + x2];
 
     board_[y2 * 8 + x2] = board_[y1 * 8 + x1];
     if (board_[y1 * 8 + x1]->getType() == "pawn") {
@@ -95,14 +100,14 @@ bool ChessBoard::play_move(int x1, int y1, int x2, int y2) {
       // Call promote function
       Piece* promoted_piece = pawn->promote();
       if (promoted_piece != nullptr) {
-        promoted = board_[y1 * 8 + x1];
+        // promoted = board_[y1 * 8 + x1];
         // Replace the pawn with the promoted piece
         board_[y2 * 8 + x2] = promoted_piece;
         // Delete the pawn
         delete pawn;
       }
     }
-    save_move(new Move((y1 * 8 + x1), (y2 * 8 + x2)), captured, promoted);
+    // save_move(new Move((y1 * 8 + x1), (y2 * 8 + x2)), captured, promoted);
     board_[y1 * 8 + x1] = nullptr;
     return true;
   } else {
@@ -298,53 +303,53 @@ void ChessBoard::generateMoves(E_Color ColourToMove) {
   }
 }
 
-void ChessBoard::cancel_move() {
-  if (historical_.size() > 0) {
-    Historical* last = historical_.back();
-    Move* lastMove = last->getMove();
-    Piece* capturedPiece = last->getCapturedPiece();
-    board_[lastMove->StartSquare] = board_[lastMove->TargetSquare];
-    if (capturedPiece) {
-      board_[lastMove->TargetSquare] = capturedPiece;
-    } else {
-      board_[lastMove->TargetSquare] = nullptr;
-    }
-  }
-  historical_.pop_back();
-}
+// void ChessBoard::cancel_move() {
+//   if (historical_.size() > 0) {
+//     Historical* last = historical_.back();
+//     Move* lastMove = last->getMove();
+//     Piece* capturedPiece = last->getCapturedPiece();
+//     board_[lastMove->StartSquare] = board_[lastMove->TargetSquare];
+//     if (capturedPiece) {
+//       board_[lastMove->TargetSquare] = capturedPiece;
+//     } else {
+//       board_[lastMove->TargetSquare] = nullptr;
+//     }
+//   }
+//   historical_.pop_back();
+// }
 
-void ChessBoard::generateLegalMoves(E_Color ColourToMove) {
-  E_Color opponentColor = ColourToMove == WHITE ? BLACK : WHITE;
-  int kingSquare;
-  for (int i = 0; i < 64; i++) {
-    Piece* piece = board_[i];
-    if (piece && piece->getColor() == ColourToMove) {
-      vector<Move*> pseudoLegalMoves = piece->getPseudoLegalMoves();
-      if (piece->getType() == "king") {
-        kingSquare = i;
-      }
-      for (Move* moveToVerify : pseudoLegalMoves) {
-        int x1 = moveToVerify->StartSquare % 8;
-        int y1 = moveToVerify->StartSquare / 8;
-        int x2 = moveToVerify->TargetSquare % 8;
-        int y2 = moveToVerify->TargetSquare / 8;
-        play_move(x1, y1, x2, y2);
-        generateMoves(opponentColor);
-        for (int j = 0; j < 64; j++) {
-          Piece* opponentPiece = board_[j];
-          if (opponentPiece) {
-            vector<Move*> opponentPseudoLegalMoves =
-                opponentPiece->getPseudoLegalMoves();
-            for (Move* response : opponentPseudoLegalMoves) {
-              if (response->TargetSquare == kingSquare) {
-              } else {
-                getLegalMoves().push_back(moveToVerify);
-              }
-            }
-          }
-        }
-        cancel_move();
-      }
-    }
-  }
-}
+// void ChessBoard::generateLegalMoves(E_Color ColourToMove) {
+//   E_Color opponentColor = ColourToMove == WHITE ? BLACK : WHITE;
+//   int kingSquare;
+//   for (int i = 0; i < 64; i++) {
+//     Piece* piece = board_[i];
+//     if (piece && piece->getColor() == ColourToMove) {
+//       vector<Move*> pseudoLegalMoves = piece->getPseudoLegalMoves();
+//       if (piece->getType() == "king") {
+//         kingSquare = i;
+//       }
+//       for (Move* moveToVerify : pseudoLegalMoves) {
+//         int x1 = moveToVerify->StartSquare % 8;
+//         int y1 = moveToVerify->StartSquare / 8;
+//         int x2 = moveToVerify->TargetSquare % 8;
+//         int y2 = moveToVerify->TargetSquare / 8;
+//         play_move(x1, y1, x2, y2);
+//         generateMoves(opponentColor);
+//         for (int j = 0; j < 64; j++) {
+//           Piece* opponentPiece = board_[j];
+//           if (opponentPiece) {
+//             vector<Move*> opponentPseudoLegalMoves =
+//                 opponentPiece->getPseudoLegalMoves();
+//             for (Move* response : opponentPseudoLegalMoves) {
+//               if (response->TargetSquare == kingSquare) {
+//               } else {
+//                 getLegalMoves().push_back(moveToVerify);
+//               }
+//             }
+//           }
+//         }
+//         cancel_move();
+//       }
+//     }
+//   }
+// }
