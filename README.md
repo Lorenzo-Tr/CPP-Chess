@@ -38,5 +38,17 @@ mkdir obj/
 make re
 ```
 
+Deuxième solution via `cmake`
+```bash
+git clone https://github.com/Lorenzo-Tr/CPP-Chess
+cd CPP-Chess
+mkdir build/
+cd build/
+cmake
+make install
+```
+
+Ensuite pour lancer le programme `../bin/Chess`
+
 # 📜 Bilan
 Le projet était bien casse-tête, mais à la fois très instructif. Je serais ravi de recommencer le projet depuis zéro afin d'éviter les erreurs que j'ai faites et également avoir un code plus propre
